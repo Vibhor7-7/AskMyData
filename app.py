@@ -26,6 +26,14 @@ def logout():
     session.pop("username", None)
     return redirect(url_for("index"))
 
+@app.route("/home")
+def home():
+    if "username" in session:
+        username = session["username"]
+        return render_template("logged_in_home.html", username=username)
+    else:
+        return redirect(url_for("login"))
+
 
 print("App is running...")
 if __name__ == "__main__":
