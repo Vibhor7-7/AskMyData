@@ -1,0 +1,7 @@
+flask
+pandas
+numpy
+icalendar
+matplotlib
+faiss-cpu
+chroma
