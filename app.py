@@ -22,8 +22,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        # Need to add verification
-        print(username)
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute("SELECT password FROM users WHERE username = ?", (username,))
+        row = c.fetchone()
+        conn.close()
+        if row is None or not check_password_hash(row[0], password):
+            return "Invalid username or password"
+        
         session["username"] = username
         return render_template("logged_in_home.html", username=username)
     else:
