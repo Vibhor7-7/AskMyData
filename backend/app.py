@@ -11,7 +11,7 @@ def index():
     c.execute('''CREATE TABLE IF NOT EXISTS users
                 (fullname TEXT NOT NULL,
                 username TEXT PRIMARY KEY,
-              email TEXT NOT NULL,
+                email TEXT NOT NULL,
                 password TEXT NOT NULL)''')
     conn.commit()
     conn.close()
@@ -28,7 +28,6 @@ def login():
         return render_template("logged_in_home.html", username=username)
     else:
         return render_template("login.html")
-
 
 @app.route("/logout")
 def logout():
@@ -63,7 +62,6 @@ def register():
         return render_template("logged_in_home.html", username=username)
     else:
         return render_template("register.html")
-
 
 print("App is running...")
 if __name__ == "__main__":

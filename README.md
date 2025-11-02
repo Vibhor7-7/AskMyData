@@ -100,10 +100,6 @@ For static images: render a Matplotlib figure, save to PNG, and return a URL or 
 
 Compose a response object that includes:
 
-The textual answer Verification status and (optional) the raw data query used to compute numeric answers Any retrieved context snippets (if you want to show source lines) A visualization payload: image URL/base64 or Plotly JSON/HTML. Helpful metadata (file id, timestamp, etc.)
-
-Return the response over the API. 
-The frontend then: Renders text in the chat UI, Renders images or Plotly charts, Shows source/context snippets if desired.
-
+The textual answer Verification status and (optional) the raw data query used to compute numeric answers Any retrieved context snippets (if you want to show source lines) A visualization payload: image URL/base64 or Plotly JSON/HTML. Helpful metadata (file id, timestamp, etc.) Return the response over the API.  The frontend then: Renders text in the chat UI, Renders images or Plotly charts, Shows source/context snippets if desired
 
 

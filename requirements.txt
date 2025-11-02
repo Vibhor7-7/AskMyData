@@ -5,3 +5,5 @@ icalendar
 matplotlib
 faiss-cpu
 chroma
+ollama-python
+langchain
