@@ -1,12 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
-app = Flask(__name__)
+import os
+
+# Get the current directory path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Set up paths
+template_dir = os.path.join(current_dir, 'templates')
+static_dir = os.path.join(current_dir, 'static')
+db_path = os.path.join(current_dir, 'users.db')
+
+app = Flask(__name__, 
+           template_folder=template_dir,
+           static_folder=static_dir)
 app.secret_key = 'AskMyData'
 #home page
 @app.route("/")
 def index():
-    conn=sqlite3.connect('users.db')
+    conn=sqlite3.connect(db_path)
     c=conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS users
                 (fullname TEXT NOT NULL,
@@ -22,8 +33,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        # Need to add verification
-        print(username)
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        c.execute("SELECT password FROM users WHERE username = ?", (username,))
+        row = c.fetchone()
+        conn.close()
+        if row is None or not check_password_hash(row[0], password):
+            return "Invalid username or password"
+        
         session["username"] = username
         return render_template("logged_in_home.html", username=username)
     else:
@@ -49,7 +66,7 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
         hashed_password = generate_password_hash(password)
-        conn = sqlite3.connect('users.db')
+        conn = sqlite3.connect(db_path)
         c = conn.cursor()
         try:
             c.execute("INSERT INTO users (fullname, username, email, password) VALUES (?, ?, ?, ?)",
@@ -63,6 +80,7 @@ def register():
     else:
         return render_template("register.html")
 
-print("App is running...")
+
 if __name__ == "__main__":
-    app.run()
+    print("App is running...")
+    app.run(debug=True)
