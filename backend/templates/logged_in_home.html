@@ -10,5 +10,7 @@
     <div class="welcome-container">
         <h2>Welcome, {{ username }}!</h2>
         <p>You have successfully logged in.</p>
+        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+        <a href="{{ url_for('upload') }}" class="upload-button">Upload Data</a>
     </div>
 </html>

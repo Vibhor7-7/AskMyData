@@ -85,6 +85,15 @@ def register():
         return render_template("register.html")
 
 
+@app.route("/upload", methods=["GET", "POST"])
+def upload():
+    if "username" not in session:
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        # Handle file upload logic here
+        return "File uploaded successfully!"
+    return render_template("upload.html")
+
 if __name__ == "__main__":
     print("App is running...")
     app.run(debug=True)
