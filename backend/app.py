@@ -30,6 +30,8 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if "username" in session:
+        return redirect(url_for("home"))
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -40,7 +42,6 @@ def login():
         conn.close()
         if row is None or not check_password_hash(row[0], password):
             return "Invalid username or password"
-        
         session["username"] = username
         return render_template("logged_in_home.html", username=username)
     else:
@@ -60,6 +61,8 @@ def home():
         return redirect(url_for("login"))
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if "username" in session:
+        return redirect(url_for("home"))
     if request.method == "POST":
         fullname = request.form["fullname"]
         username = request.form["username"]
@@ -76,6 +79,7 @@ def register():
             return "Username already exists. Please choose a different one."
         finally:
             conn.close()
+        session["username"] = username
         return render_template("logged_in_home.html", username=username)
     else:
         return render_template("register.html")
