@@ -90,7 +90,12 @@ def upload():
     if "username" not in session:
         return redirect(url_for("login"))
     if request.method == "POST":
-        # Handle file upload logic here
+        # if file is csv then send it to csv_parser.py for processing
+        file = request.files["file"]
+        if file.filename.endswith('.csv'):
+            filepath = os.path.join(current_dir, 'uploads', file.filename)
+            file.save(filepath)
+            
         return "File uploaded successfully!"
     return render_template("upload.html")
 
