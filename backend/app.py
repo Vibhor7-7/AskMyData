@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
+import io
+import json
+import pandas as pd
+from icalendar import Calendar
 
 # Get the current directory path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -89,22 +93,61 @@ def register():
 def upload():
     if "username" not in session:
         return redirect(url_for("login"))
+
     if request.method == "POST":
-        # if file is csv then send it to csv_parser.py for processing
-        file = request.files["file"]
-        if file.filename.endswith('.csv'):
-            filepath = os.path.join(current_dir, 'uploads', file.filename)
-            file.save(filepath)
+        file = request.files.get("file")
+        if not file or file.filename == "":
+            return "No file uploaded", 400
 
-        if file.filename.endswith('.json'):
-            filepath = os.path.join(current_dir, 'uploads', file.filename)
-            file.save(filepath)
+        filename = file.filename
+        fname = filename.lower()
+        info = {}
 
-        if file.filename.endswith('.ics'):
-            filepath = os.path.join(current_dir, 'uploads', file.filename)
-            file.save(filepath)
+        try:
+            if fname.endswith(".csv"):
+                # read bytes -> string -> pandas
+                content = file.stream.read()
+                text = content.decode("utf-8", errors="replace")
+                df = pd.read_csv(io.StringIO(text))
+                info["type"] = "csv"
+                info["num_rows"] = len(df)
+                info["num_cols"] = len(df.columns)
+                info["columns"] = df.columns.tolist()
 
-        return render_template("question.html", filename=file.filename)
+            elif fname.endswith(".json"):
+                content = file.stream.read()
+                data = json.loads(content.decode("utf-8"))
+                info["type"] = "json"
+                if isinstance(data, list):
+                    info["items"] = len(data)
+                    info["sample"] = data[0] if data else None
+                elif isinstance(data, dict):
+                    info["keys"] = list(data.keys())
+                else:
+                    info["json_type"] = type(data).__name__
+
+            elif fname.endswith(".ics"):
+                content = file.stream.read()
+                cal = Calendar.from_ical(content)
+                events = [c for c in cal.walk() if c.name == "VEVENT"]
+                info["type"] = "ics"
+                info["num_events"] = len(events)
+                if events:
+                    first = events[0]
+                    info["first_summary"] = str(first.get("summary"))
+                    dtstart = first.get("dtstart")
+                    if dtstart:
+                        info["first_start"] = str(dtstart.dt)
+
+            else:
+                return "Unsupported file type. Allowed: .csv, .json, .ics", 400
+
+        except Exception as e:
+            return f"Error processing file: {e}", 500
+
+        # pass filename + info to questions page (no saving)
+        return render_template("questions.html", filename=filename, info=info)
+
     return render_template("upload.html")
 
 if __name__ == "__main__":
