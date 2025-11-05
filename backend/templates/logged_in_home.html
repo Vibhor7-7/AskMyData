@@ -3,14 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logged In</title>
+    <title>AskMyData - Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="welcome-container">
-        <h2>Welcome, {{ username }}!</h2>
-        <p>You have successfully logged in.</p>
-        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
-        <a href="{{ url_for('upload') }}" class="upload-button">Upload Data</a>
-    </div>
+    <nav class="navbar">
+        <div class="nav-brand">AskMyData</div>
+        <div class="nav-user">
+            <span>{{ username }}</span>
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="welcome-section">
+            <h1>Welcome back, {{ username }}!</h1>
+            <p>What would you like to do today?</p>
+        </div>
+
+        <div class="action-cards">
+            <div class="card">
+                <h3>Upload New Data</h3>
+                <p>Upload your CSV, JSON, or iCal files for analysis</p>
+                <a href="{{ url_for('upload') }}" class="button primary">Upload Data</a>
+            </div>
+            
+            <div class="card">
+                <h3>View History</h3>
+                <p>Access your previous analyses and results</p>
+                <a href="#" class="button secondary">View History</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 AskMyData. All rights reserved.</p>
+    </footer>
+</body>
 </html>

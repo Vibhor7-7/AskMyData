@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Flask App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AskMyData - Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h2>Welcome to Flask</h2>
-    <p>Hello World</p>
-    <button onclick="location.href='/login'">Go to Login</button>
-    <button onclick="location.href='/register'">Go to Register</button>
+    <div class="container">
+        <div class="form-container">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Welcome to AskMyData</h2>
+            <button onclick="location.href='/login'">Login</button>
+            <button onclick="location.href='/register'" style="background-color: #e0e7ff; color: var(--primary-color); margin-top: 1rem;">Register</button>
+        </div>
+    </div>
 </body>
 </html>

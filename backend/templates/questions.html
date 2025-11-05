@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questions</title>
+    <title>Ask Questions - AskMyData</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>File Uplloaded SuccessFully</h1>
-    <p>ask your data</p>
-    <input type="text" id="questionInput" placeholder="Type your question here...">
-    <button id="askButton">Ask</button>
+    <div class="container">
+        <div class="form-container">
+            <h2 style="text-align: center; margin-bottom: 1rem;">File Uploaded Successfully</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">What would you like to know about your data?</p>
+            <div class="form-group">
+                <input type="text" id="questionInput" placeholder="Type your question here..." style="margin-bottom: 1rem;">
+                <button id="askButton">Ask Question</button>
+            </div>
+            <a href="{{ url_for('home') }}" class="link-button">Back to Home</a>
+        </div>
+    </div>
 </body>
 </html>

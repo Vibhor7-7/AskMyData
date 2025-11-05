@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Data</title>
+    <title>Upload Data - AskMyData</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="upload-container">
-        <h2>Upload Your Data</h2>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button type="submit" class="upload-button">Upload</button>
-        </form>
-        <a href="{{ url_for('home') }}" class="home-button">Back to Home</a>
+    <div class="container">
+        <div class="form-container">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Upload Your Data</h2>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file">Select File</label>
+                    <input type="file" id="file" name="file" required>
+                </div>
+                <button type="submit">Upload</button>
+            </form>
+            <a href="{{ url_for('home') }}" class="link-button">Back to Home</a>
+        </div>
     </div>
+</body>
 </html>
