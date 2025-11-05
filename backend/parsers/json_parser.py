@@ -7,7 +7,8 @@ def parse_json_file(file_path):
     try: 
         df = pd.read_json(file_path)
         return df
-    except: 
+    except Exception as e:
+        print(f"Error reading JSON file with pandas: {e}")
         with open(file_path, 'r') as file:
             data = json.load(file)
 
