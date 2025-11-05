@@ -9,8 +9,8 @@
 <body>
     <div class="upload-container">
         <h2>Upload Your Data</h2>
-        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-            <input type="file" name="datafile" required>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
             <button type="submit" class="upload-button">Upload</button>
         </form>
         <a href="{{ url_for('home') }}" class="home-button">Back to Home</a>
