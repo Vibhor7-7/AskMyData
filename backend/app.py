@@ -95,6 +95,14 @@ def upload():
         if file.filename.endswith('.csv'):
             filepath = os.path.join(current_dir, 'uploads', file.filename)
             file.save(filepath)
+
+        if file.filename.endswith('.json'):
+            filepath = os.path.join(current_dir, 'uploads', file.filename)
+            file.save(filepath)
+
+        if file.filename.endswith('.ics'):
+            filepath = os.path.join(current_dir, 'uploads', file.filename)
+            file.save(filepath)
             
         return "File uploaded successfully!"
     return render_template("upload.html")
