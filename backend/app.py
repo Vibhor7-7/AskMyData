@@ -103,8 +103,8 @@ def upload():
         if file.filename.endswith('.ics'):
             filepath = os.path.join(current_dir, 'uploads', file.filename)
             file.save(filepath)
-            
-        return "File uploaded successfully!"
+
+        return render_template("question.html", filename=file.filename)
     return render_template("upload.html")
 
 if __name__ == "__main__":
