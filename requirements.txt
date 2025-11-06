@@ -7,3 +7,4 @@ faiss-cpu
 chroma
 ollama-python
 langchain
+pdfplumber
