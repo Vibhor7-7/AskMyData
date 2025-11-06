@@ -126,6 +126,16 @@ def upload():
                 else:
                     info["json_type"] = type(data).__name__
 
+            elif fname.endswith(".pdf"):
+                import pdfplumber  # Best all-around library
+                content = file.stream.read()
+                with pdfplumber.open(io.BytesIO(content)) as pdf:
+                    num_pages = len(pdf.pages)
+                    first_page_text = pdf.pages[0].extract_text() if num_pages > 0 else ""
+                info["type"] = "pdf"
+                info["num_pages"] = num_pages
+                info["first_page_snippet"] = first_page_text[:200]  # first 200 chars
+
             elif fname.endswith(".ics"):
                 content = file.stream.read()
                 cal = Calendar.from_ical(content)
@@ -140,7 +150,7 @@ def upload():
                         info["first_start"] = str(dtstart.dt)
 
             else:
-                return "Unsupported file type. Allowed: .csv, .json, .ics", 400
+                return "Unsupported file type. Allowed: .csv, .json, .ics, pdf", 400
 
         except Exception as e:
             return f"Error processing file: {e}", 500
