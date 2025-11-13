@@ -2,6 +2,20 @@
 # AskMyData
 
 
+## **TO-DO List:**
+### - Standardize the DataFrames from each parser so that the embeddings are consistent 
+### - RAG: Chunking and Text Conversion (convert data frames in text chunks)
+### - RAG: Embeddings Generation
+### - RAG: Vector Database Setup 
+### - RAG: Query Processing and Type of command detection (optional)
+### - RAG: LLM Integration 
+### - RAG: Answer verification (return a confidence score of how good the answer was)
+### - RAG: Visualization Generation
+### - Frontend: Display the main menu (TBD: Chat UI? Upload TOOL?)
+### - Frontend: Response rendering: (How will we output the response, render visuals)
+### - Frontend: API Endpoints for frontend 
+
+
 ## **RAG Pipeline Step by Step:**
 
 
