@@ -15,6 +15,14 @@
 ### - Frontend: Response rendering: (How will we output the response, render visuals)
 ### - Frontend: API Endpoints for frontend 
 
+## Ollama Setup: 
+
+### - Brew Install Ollama 
+### - ollama servse (start it in the background)
+### - ollama pull nomic-embed-text: embedding model 
+### - ollama pull llama3.2 (2GB, Fast and lightweight for our use case)
+
+
 
 ## **RAG Pipeline Step by Step:**
 

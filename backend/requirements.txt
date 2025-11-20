@@ -5,6 +5,8 @@ icalendar
 matplotlib
 faiss-cpu
 chroma
-ollama-python
+ollama
 langchain
 pdfplumber
+tiktoken
+
