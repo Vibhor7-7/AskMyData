@@ -32,7 +32,8 @@ Usage:
 import pdfplumber  # Best all-around library
 import pandas as pd
 import os 
-import re 
+import re
+from parser_utils import standardize_dataframe 
 
 
 def parse_pdf_file(file_path): 
@@ -180,19 +181,17 @@ def parse_text_structured(file_path):
 def parse_pdf_to_df(file_path):
     """
     Unified DataFrame output for any PDF content
-    Returns a single DataFrame regardless of content type
+    Returns a single STANDARDIZED DataFrame regardless of content type
     """
     result = parse_pdf_file(file_path)
+    filename = os.path.basename(file_path)
     
     # Priority 1: If tables exist, combine all tables
     if result['tables']:
-        # Option A: Return all tables concatenated
+        # Return all tables concatenated
         combined_df = pd.concat(result['tables'], ignore_index=True)
-        combined_df.attrs['source'] = 'tables'
-        return combined_df
-        
-        # Option B: Return just first table (current approach)
-        # return result['tables'][0]
+        standardized_df = standardize_dataframe(combined_df, filename, 'pdf_table')
+        return standardized_df
     
     # Priority 2: If only text, create structured DataFrame
     else:
@@ -211,8 +210,8 @@ def parse_pdf_to_df(file_path):
                 })
         
         df = pd.DataFrame(pages_data)
-        df.attrs['source'] = 'text'
-        return df
+        standardized_df = standardize_dataframe(df, filename, 'pdf_text')
+        return standardized_df
 
 def analyze_pdf_type(file_path):
     """
