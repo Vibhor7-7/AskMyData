@@ -6,24 +6,63 @@ RESTful backend for data analysis with RAG pipeline
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from functools import wraps
 import sqlite3
 import os
 from datetime import datetime
+import traceback
+
+# Import RAG pipeline components
+from parsers.file_parser import parse_file
+from rag.chunking_module import dataframe_to_chunks
+from rag.embeddings import EmbeddingGenerator
+from rag.vector_store import VectorStore
 
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = 'AskMyData'  # Change this in production!
 
-# Configure CORS
+# Configure CORS - Allow all origins for development
 CORS(app, 
      supports_credentials=True,
-     origins=["http://localhost:3000", "http://localhost:5173"])  # Allow frontend
+     origins="*",
+     allow_headers="*",
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
 # Database path
 DB_PATH = os.path.join(os.path.dirname(__file__), 'users.db')
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+CHROMA_DB_PATH = os.path.join(os.path.dirname(__file__), 'rag', 'chroma_db')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(CHROMA_DB_PATH, exist_ok=True)
+
+# Allowed file extensions
+ALLOWED_EXTENSIONS = {'csv', 'json', 'pdf', 'ics'}
+
+# RAG components - initialized lazily
+embedding_generator = None
+vector_store = None
+
+def get_embedding_generator():
+    """Lazy initialization of embedding generator"""
+    global embedding_generator
+    if embedding_generator is None:
+        print("Initializing embedding generator...")
+        embedding_generator = EmbeddingGenerator()
+    return embedding_generator
+
+def get_vector_store():
+    """Lazy initialization of vector store"""
+    global vector_store
+    if vector_store is None:
+        print("Initializing vector store...")
+        vector_store = VectorStore(persist_directory=CHROMA_DB_PATH)
+    return vector_store
+
+def allowed_file(filename):
+    """Check if file extension is allowed"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ============================================
 # DATABASE INITIALIZATION
@@ -103,8 +142,35 @@ def login_required(f):
     return decorated_function
 
 # ============================================
-# HEALTH CHECK
+# ROOT & HEALTH CHECK
 # ============================================
+
+@app.route('/', methods=['GET'])
+def home():
+    """Root endpoint"""
+    return jsonify({
+        "service": "AskMyData REST API",
+        "version": "1.0",
+        "status": "running",
+        "endpoints": {
+            "health": "/api/health",
+            "auth": {
+                "register": "/api/auth/register (POST)",
+                "login": "/api/auth/login (POST)",
+                "logout": "/api/auth/logout (POST)",
+                "me": "/api/auth/me (GET)"
+            },
+            "files": {
+                "upload": "/api/files/upload (POST)",
+                "list": "/api/files (GET)",
+                "details": "/api/files/<id> (GET)",
+                "delete": "/api/files/<id> (DELETE)"
+            },
+            "query": {
+                "ask": "/api/ask (POST)"
+            }
+        }
+    })
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -325,8 +391,169 @@ def get_current_user():
 @app.route('/api/files/upload', methods=['POST'])
 @login_required
 def upload_file():
-    """Upload and process file"""
-    return jsonify({"message": "Coming soon - will integrate RAG pipeline"}), 501
+    """
+    Upload and process file with RAG pipeline
+    
+    Request: multipart/form-data
+    - file: The file to upload
+    
+    Response: 201 Created
+    {
+        "success": true,
+        "message": "File uploaded and processed successfully",
+        "file": {
+            "file_id": 1,
+            "filename": "data_123456.csv",
+            "original_filename": "data.csv",
+            "file_type": "csv",
+            "num_rows": 100,
+            "num_columns": 5,
+            "num_chunks": 10,
+            "upload_date": "2025-12-22 10:30:00"
+        }
+    }
+    """
+    username = session['username']
+    
+    # Check if file is in request
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+    
+    file = request.files['file']
+    
+    # Check if file is selected
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+    
+    # Check if file type is allowed
+    if not allowed_file(file.filename):
+        return jsonify({
+            "error": f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
+        }), 400
+    
+    try:
+        # Secure the filename and add timestamp
+        original_filename = secure_filename(file.filename)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename_parts = original_filename.rsplit('.', 1)
+        filename = f"{filename_parts[0]}_{timestamp}.{filename_parts[1]}"
+        
+        # Save file to uploads folder
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(file_path)
+        
+        # Determine file type
+        file_type = filename_parts[1].lower()
+        
+        # Step 1: Parse the file
+        print(f"Parsing file: {filename}")
+        df = parse_file(file_path)
+        
+        if df is None or df.empty:
+            os.remove(file_path)  # Clean up
+            return jsonify({"error": "Failed to parse file or file is empty"}), 400
+        
+        num_rows = len(df)
+        num_columns = len(df.columns)
+        
+        print(f"Parsed {num_rows} rows and {num_columns} columns")
+        
+        # Step 2: Chunk the data
+        print("Chunking data...")
+        chunks = dataframe_to_chunks(
+            df,
+            chunk_strategy="row",
+            max_tokens=500
+        )
+        
+        if not chunks:
+            os.remove(file_path)  # Clean up
+            return jsonify({"error": "Failed to create chunks from file"}), 400
+        
+        print(f"Created {len(chunks)} chunks")
+        
+        # Step 3: Generate embeddings (adds 'embedding' to each chunk)
+        print("Generating embeddings...")
+        emb_gen = get_embedding_generator()
+        chunks_with_embeddings = emb_gen.embed_chunks(chunks)
+        
+        if not chunks_with_embeddings:
+            os.remove(file_path)  # Clean up
+            return jsonify({"error": "Failed to generate embeddings"}), 500
+        
+        print(f"Generated embeddings for {len(chunks_with_embeddings)} chunks")
+        
+        # Step 4: Store in vector database
+        # Create user-specific collection name
+        collection_name = f"user_{username}_files"
+        
+        print(f"Storing in vector database (collection: {collection_name})...")
+        
+        # Create or get collection
+        vs = get_vector_store()
+        vs.create_collection(collection_name)
+        
+        # Add filename metadata to chunks
+        for chunk in chunks_with_embeddings:
+            if 'metadata' not in chunk:
+                chunk['metadata'] = {}
+            chunk['metadata']['filename'] = original_filename
+            chunk['metadata']['file_id'] = filename
+        
+        # add_chunks expects chunks with 'text', 'embedding', and 'metadata' fields
+        vs.add_chunks(chunks_with_embeddings)
+        
+        print("Successfully stored in vector database")
+        
+        # Step 5: Save file metadata to database
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        upload_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        c.execute(
+            """INSERT INTO files 
+               (username, filename, original_filename, file_type, file_path, 
+                upload_date, num_rows, num_columns, collection_name) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (username, filename, original_filename, file_type, file_path,
+             upload_date, num_rows, num_columns, collection_name)
+        )
+        
+        file_id = c.lastrowid
+        conn.commit()
+        conn.close()
+        
+        print(f"File metadata saved to database (ID: {file_id})")
+        
+        # Return success response
+        return jsonify({
+            "success": True,
+            "message": "File uploaded and processed successfully",
+            "file": {
+                "file_id": file_id,
+                "filename": filename,
+                "original_filename": original_filename,
+                "file_type": file_type,
+                "num_rows": num_rows,
+                "num_columns": num_columns,
+                "num_chunks": len(chunks),
+                "upload_date": upload_date
+            }
+        }), 201
+        
+    except Exception as e:
+        print(f"Error processing file: {str(e)}")
+        print(traceback.format_exc())
+        
+        # Clean up file if it exists
+        if 'file_path' in locals() and os.path.exists(file_path):
+            os.remove(file_path)
+        
+        return jsonify({
+            "error": "Failed to process file",
+            "details": str(e)
+        }), 500
 
 @app.route('/api/files', methods=['GET'])
 @login_required
@@ -517,10 +744,11 @@ def internal_error(error):
 # ============================================
 
 if __name__ == '__main__':
+    PORT = 5001  # Changed from 5000 due to macOS AirPlay using port 5000
     print("=" * 60)
     print("AskMyData REST API")
     print("=" * 60)
-    print("Server running on: http://localhost:5000")
-    print("Health check: http://localhost:5000/api/health")
+    print(f"Server running on: http://localhost:{PORT}")
+    print(f"Health check: http://localhost:{PORT}/api/health")
     print("=" * 60)
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=PORT, host='127.0.0.1')

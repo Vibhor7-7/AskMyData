@@ -2,7 +2,7 @@ from icalendar import Calendar
 import pandas as pd
 from datetime import datetime
 import os
-from parser_utils import standardize_dataframe
+from .parser_utils import standardize_dataframe
 
 
 def parse_ical_file(file_path):

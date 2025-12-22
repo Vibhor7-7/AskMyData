@@ -3,11 +3,11 @@ Unified File Parser Interface
 Automatically detects file type and calls appropriate parser
 """
 import os
-from parser_utils import detect_content_type, get_file_extension
-from csv_parser import csv_parser
-from json_parser import parse_json_file
-from pdf_parser import parse_pdf_to_df
-from ical_parser import parse_ical_file
+from .parser_utils import detect_content_type, get_file_extension
+from .csv_parser import csv_parser
+from .json_parser import parse_json_file
+from .pdf_parser import parse_pdf_to_df
+from .ical_parser import parse_ical_file
 
 
 def parse_file(file_path):

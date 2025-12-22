@@ -25,17 +25,8 @@ class EmbeddingGenerator:
 
     def __init__(self, model_name: str = "nomic-embed-text"): 
         self.model_name = model_name 
-        self.embedding_dim = 768 # Nomic-emded-text outputs 768 dimensional vectors 
-
-        try: 
-            test_embedding = self.embed("test")
-            print(f" Embedding model {model_name} is working")
-            print(f" Embedding dimension: {len(test_embedding)}")
-
-        except Exception as e: 
-            print(f"Error loading the model: {e}")
-            print("Make Sure Ollama is Running, run: ollama serve")
-            raise 
+        self.embedding_dim = 768 # Nomic-embed-text outputs 768 dimensional vectors 
+        print(f"✓ Embedding generator initialized (model: {model_name})") 
 
     def embed(self, text: str) -> list[float]: 
         """
@@ -50,12 +41,15 @@ class EmbeddingGenerator:
 
         try: 
             response = ollama.embeddings(
-                model = self.model_name,
+                model=self.model_name,
                 prompt=text
             )
-            return response['embedding']
+            # Response is an EmbeddingsResponse object with .embedding attribute
+            return response.embedding
         except Exception as e: 
-            print(f"Error Occured while generating embedding: {e}")
+            print(f"Error occurred while generating embedding: {e}")
+            import traceback
+            traceback.print_exc()
             return [0.0] * self.embedding_dim # Return zero vector on error 
     
     def embed_batch(self, texts: List[str]) -> List[List[float]]: 

@@ -1,7 +1,7 @@
 import pandas as pd 
 import json
 import os
-from parser_utils import standardize_dataframe
+from .parser_utils import standardize_dataframe
 
 
 def parse_json_file(file_path):

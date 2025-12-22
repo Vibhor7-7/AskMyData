@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from parser_utils import standardize_dataframe
+from .parser_utils import standardize_dataframe
 
 
 def csv_parser(file_path):

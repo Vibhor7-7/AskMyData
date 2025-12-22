@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 
 # Base URL
-BASE_URL = "http://localhost:5000/api"
+BASE_URL = "http://localhost:5001/api"
 
 # Colors for terminal output
 GREEN = '\033[92m'
