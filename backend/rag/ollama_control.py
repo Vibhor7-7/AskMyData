@@ -70,7 +70,7 @@ class OllamaLLM:
             prompt_template: str = None
     ) -> str: 
         """
-        Build a prompt for the LLM using retrieved context
+        Build a system prompt for the LLM using retrieved context
         
         Why is this important?
         - The prompt structure affects answer quality

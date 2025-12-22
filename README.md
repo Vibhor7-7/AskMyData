@@ -125,3 +125,32 @@ Compose a response object that includes:
 The textual answer Verification status and (optional) the raw data query used to compute numeric answers Any retrieved context snippets (if you want to show source lines) A visualization payload: image URL/base64 or Plotly JSON/HTML. Helpful metadata (file id, timestamp, etc.) Return the response over the API.  The frontend then: Renders text in the chat UI, Renders images or Plotly charts, Shows source/context snippets if desired
 
 
+
+
+
+
+
+
+
+
+
+### Flask Setup
+
+Client sends request:
+  POST /api/auth/login
+  Headers: Content-Type: application/json
+  Body: {"username": "john", "password": "test"}
+          ↓
+Flask receives request:
+  request.get_json() → {"username": "john", "password": "test"}
+          ↓
+Flask processes:
+  - Validate data
+  - Check database
+  - Create session
+          ↓
+Flask sends response:
+  jsonify({"success": True, "user": {...}})
+  Status code: 200
+          ↓
+Client receives response

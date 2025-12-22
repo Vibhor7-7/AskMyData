@@ -61,14 +61,14 @@ def main():
         'validation.csv',
         'listings.json',
         'sch.ics',
-        # 'sample.pdf'  # Uncomment if you have a sample PDF
+        '_Vibhor_Sharma_.pdf'  
     ]
     
     for filename in test_files:
         file_path = os.path.join(script_dir, filename)
         
         if not os.path.exists(file_path):
-            print(f"\n⚠️  Skipping {filename} - file not found")
+            print(f"\n  Skipping {filename} - file not found")
             continue
         
         print(f"\n{'='*60}")
@@ -79,18 +79,17 @@ def main():
             df = parse_file(file_path)
             
             if df is not None:
-                print(f"✓ Parsed successfully")
+                print(f" Parsed successfully")
                 print(f"  Shape: {df.shape}")
                 print(f"  Columns: {list(df.columns)}")
                 print(f"  Content type: {df['content_type'].iloc[0] if len(df) > 0 else 'N/A'}")
                 print(f"\n  First row:")
                 print(f"  {df.iloc[0].to_dict()}")
             else:
-                print(f"✗ Parser returned None")
+                print(f" Parser returned None")
                 
         except Exception as e:
-            print(f"✗ Error: {e}")
-
+            print(f" Error: {e}")
 
 if __name__ == "__main__":
     main()
