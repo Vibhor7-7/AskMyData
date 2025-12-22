@@ -8,9 +8,9 @@ Main Modue that ties everything toegether:
 """
 
 from typing import Dict, List 
-from embeddings import EmbeddingGenerator
-from vector_store import VectorStore 
-from ollama_control import OllamaLLM
+from .embeddings import EmbeddingGenerator
+from .vector_store import VectorStore 
+from .ollama_control import OllamaLLM
 
 class QueryProcessor: 
     """

@@ -18,6 +18,7 @@ from parsers.file_parser import parse_file
 from rag.chunking_module import dataframe_to_chunks
 from rag.embeddings import EmbeddingGenerator
 from rag.vector_store import VectorStore
+from rag.query_processor import QueryProcessor
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -663,27 +664,139 @@ def delete_file(file_id):
     })
 
 # ============================================
-# QUERY ENDPOINT (TODO: Will implement next)
+# QUERY ENDPOINT
 # ============================================
 
 @app.route('/api/ask', methods=['POST'])
 @login_required
 def ask_question():
-    """Ask question about data"""
+    """
+    Ask a question about uploaded data using RAG pipeline
+    
+    Request Body:
+    {
+        "question": "What is the average age?",
+        "file_id": 1  // optional - if not provided, searches all user's files
+    }
+    
+    Response: 200 OK
+    {
+        "success": true,
+        "question": "What is the average age?",
+        "answer": "The average age is 28.5 years based on the data.",
+        "num_chunks_used": 5,
+        "sources": ["data.csv"]
+    }
+    """
+    username = session['username']
     data = request.get_json()
+    
     question = data.get('question')
+    file_id = data.get('file_id')  # Optional - specific file
     
     if not question:
         return jsonify({"error": "Question required"}), 400
     
-    # TODO: Implement QueryProcessor integration
-    return jsonify({
-        "success": True,
-        "question": question,
-        "answer": "This will be replaced with RAG pipeline output",
-        "context_used": [],
-        "message": "RAG pipeline integration coming soon"
-    })
+    try:
+        # Determine collection name (user-specific)
+        collection_name = f"user_{username}_files"
+        
+        # Check if user has any files uploaded
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute(
+            "SELECT COUNT(*) FROM files WHERE username = ?",
+            (username,)
+        )
+        file_count = c.fetchone()[0]
+        
+        if file_count == 0:
+            conn.close()
+            return jsonify({
+                "error": "No files uploaded. Please upload a file first.",
+                "suggestion": "Use POST /api/files/upload to upload data files"
+            }), 400
+        
+        # Get file info for response
+        if file_id:
+            c.execute(
+                "SELECT original_filename FROM files WHERE file_id = ? AND username = ?",
+                (file_id, username)
+            )
+            file_row = c.fetchone()
+            if not file_row:
+                conn.close()
+                return jsonify({"error": "File not found"}), 404
+            sources = [file_row[0]]
+        else:
+            c.execute(
+                "SELECT DISTINCT original_filename FROM files WHERE username = ?",
+                (username,)
+            )
+            sources = [row[0] for row in c.fetchall()]
+        
+        conn.close()
+        
+        print(f"Processing question: {question}")
+        print(f"Collection: {collection_name}")
+        
+        # Initialize QueryProcessor with collection name and persist directory
+        query_processor = QueryProcessor(
+            collection_name=collection_name,
+            embedding_model='nomic-embed-text',
+            llm_model='llama3.2',
+            chroma_persist_dir=CHROMA_DB_PATH
+        )
+        
+        # Process the query
+        print("Running RAG pipeline...")
+        result = query_processor.process_query(question)
+        
+        if not result or 'answer' not in result:
+            return jsonify({
+                "error": "Failed to generate answer",
+                "details": "Query processor returned empty result"
+            }), 500
+        
+        answer = result['answer']
+        context_used = result.get('context', [])
+        
+        print(f"Answer generated: {answer[:100]}...")
+        print(f"Used {len(context_used)} context chunks")
+        
+        # Save to chat history
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        c.execute(
+            """INSERT INTO chat_history (username, file_id, question, answer, timestamp)
+               VALUES (?, ?, ?, ?, ?)""",
+            (username, file_id, question, answer, timestamp)
+        )
+        
+        chat_id = c.lastrowid
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            "success": True,
+            "chat_id": chat_id,
+            "question": question,
+            "answer": answer,
+            "num_chunks_used": len(context_used),
+            "sources": sources,
+            "timestamp": timestamp
+        })
+        
+    except Exception as e:
+        print(f"Error processing question: {str(e)}")
+        print(traceback.format_exc())
+        
+        return jsonify({
+            "error": "Failed to process question",
+            "details": str(e)
+        }), 500
 
 @app.route('/api/ask/history', methods=['GET'])
 @login_required
