@@ -126,14 +126,6 @@ The textual answer Verification status and (optional) the raw data query used to
 
 
 
-
-
-
-
-
-
-
-
 ### Flask Setup
 
 Client sends request:

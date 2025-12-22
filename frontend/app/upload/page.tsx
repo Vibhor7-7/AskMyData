@@ -1,3 +1,5 @@
+"use client"
+
 import { DashboardHeader } from "@/components/dashboard/header"
 import { FileDropzone } from "@/components/upload/file-dropzone"
 

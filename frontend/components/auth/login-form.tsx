@@ -9,9 +9,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useToast } from "@/hooks/use-toast"
+import { api } from "@/lib/api"
 
 export function LoginForm() {
   const router = useRouter()
+  const { toast } = useToast()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -23,10 +26,30 @@ export function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate login - in production, replace with real auth
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    router.push("/dashboard")
+    
+    try {
+      // Call backend API
+      const response = await api.auth.login({
+        username: formData.username,
+        password: formData.password,
+      })
+
+      if (response.success) {
+        toast({
+          title: "Login successful!",
+          description: `Welcome back, ${response.user.fullname}!`,
+        })
+        router.push("/dashboard")
+      }
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "Invalid username or password",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

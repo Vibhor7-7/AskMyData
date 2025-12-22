@@ -1,12 +1,14 @@
 "use client"
 
 import type React from "react"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Upload, FileText, FileJson, Calendar, File, X, CheckCircle, Loader2 } from "lucide-react"
+import { Upload, FileText, FileJson, Calendar, File, X, CheckCircle, Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
+import { useToast } from "@/hooks/use-toast"
+import { api, type FileInfo as ApiFileInfo } from "@/lib/api"
 
 const fileTypes = [
   { icon: FileText, label: "CSV", extension: ".csv", color: "text-emerald-500" },
@@ -24,11 +26,29 @@ interface FileInfo {
 }
 
 export function FileDropzone() {
+  const { toast } = useToast()
   const [isDragging, setIsDragging] = useState(false)
   const [file, setFile] = useState<FileInfo | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
   const [isProcessed, setIsProcessed] = useState(false)
+  const [uploadedFileId, setUploadedFileId] = useState<number | null>(null)
+  const [recentFiles, setRecentFiles] = useState<ApiFileInfo[]>([])
+  const [uploadError, setUploadError] = useState<string | null>(null)
+
+  // Fetch recent files on mount
+  useEffect(() => {
+    const fetchRecentFiles = async () => {
+      try {
+        const response = await api.files.list()
+        setRecentFiles(response.files.slice(0, 3))
+      } catch (error) {
+        console.error('Failed to fetch files:', error)
+      }
+    }
+    fetchRecentFiles()
+  }, [isProcessed])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -58,6 +78,7 @@ export function FileDropzone() {
   }, [])
 
   const processFile = (selectedFile: File) => {
+    setSelectedFile(selectedFile)
     setFile({
       name: selectedFile.name,
       size: selectedFile.size,
@@ -65,6 +86,7 @@ export function FileDropzone() {
     })
     setIsProcessed(false)
     setUploadProgress(0)
+    setUploadError(null)
   }
 
   const getFileType = (name: string): string => {
@@ -98,28 +120,64 @@ export function FileDropzone() {
   }
 
   const handleUpload = async () => {
+    if (!selectedFile) return
+
     setIsUploading(true)
-    // Simulate upload progress
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise((resolve) => setTimeout(resolve, 150))
-      setUploadProgress(i)
-    }
-    setIsUploading(false)
-    setIsProcessed(true)
-    // Simulate file info after processing
-    if (file) {
-      setFile({
-        ...file,
-        rows: Math.floor(Math.random() * 10000) + 100,
-        columns: Math.floor(Math.random() * 20) + 3,
+    setUploadError(null)
+
+    try {
+      // Simulate progress animation
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 90) return prev
+          return prev + 10
+        })
+      }, 200)
+
+      // Upload file to backend
+      const response = await api.files.upload(selectedFile)
+
+      clearInterval(progressInterval)
+      setUploadProgress(100)
+
+      if (response.success) {
+        setIsProcessed(true)
+        setUploadedFileId(response.file.file_id)
+        
+        // Update file info with backend response
+        if (file) {
+          setFile({
+            ...file,
+            rows: response.file.num_rows,
+            columns: response.file.num_columns,
+          })
+        }
+
+        toast({
+          title: "File uploaded successfully!",
+          description: `Processed ${response.file.num_chunks} chunks from ${response.file.original_filename}`,
+        })
+      }
+    } catch (err: any) {
+      setUploadError(err.message || 'Upload failed')
+      toast({
+        title: "Upload failed",
+        description: err.message || "Failed to upload file. Please try again.",
+        variant: "destructive",
       })
+      setUploadProgress(0)
+    } finally {
+      setIsUploading(false)
     }
   }
 
   const clearFile = () => {
     setFile(null)
+    setSelectedFile(null)
     setUploadProgress(0)
     setIsProcessed(false)
+    setUploadedFileId(null)
+    setUploadError(null)
   }
 
   const FileIcon = file ? getFileIcon(file.type) : Upload
@@ -220,6 +278,14 @@ export function FileDropzone() {
                     </div>
                   )}
 
+                  {/* Error Display */}
+                  {uploadError && (
+                    <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-destructive/10 text-destructive mt-4">
+                      <AlertCircle className="w-4 h-4" />
+                      <span className="text-sm font-medium">{uploadError}</span>
+                    </div>
+                  )}
+
                   {/* Processed File Info */}
                   {isProcessed && file.rows && file.columns && (
                     <motion.div
@@ -280,34 +346,37 @@ export function FileDropzone() {
       )}
 
       {/* Recent Uploads */}
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm mt-8">
-        <CardContent className="p-6">
-          <h3 className="font-semibold mb-4">Recent Uploads</h3>
-          <div className="space-y-3">
-            {[
-              { name: "sales_data.csv", size: "2.4 MB", date: "2 hours ago" },
-              { name: "customer_feedback.json", size: "1.1 MB", date: "5 hours ago" },
-              { name: "marketing_calendar.ics", size: "45 KB", date: "2 days ago" },
-            ].map((item) => (
-              <div
-                key={item.name}
-                className="flex items-center justify-between p-3 rounded-xl bg-secondary/20 hover:bg-secondary/30 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-emerald-500" />
+      {recentFiles.length > 0 && (
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm mt-8">
+          <CardContent className="p-6">
+            <h3 className="font-semibold mb-4">Recent Uploads</h3>
+            <div className="space-y-3">
+              {recentFiles.map((item) => (
+                <div
+                  key={item.file_id}
+                  className="flex items-center justify-between p-3 rounded-xl bg-secondary/20 hover:bg-secondary/30 transition-colors cursor-pointer"
+                  onClick={() => (window.location.href = '/chat')}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{item.original_filename}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.num_rows} rows × {item.num_columns} columns
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{item.size}</p>
-                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {new Date(item.upload_date).toLocaleDateString()}
+                  </span>
                 </div>
-                <span className="text-sm text-muted-foreground">{item.date}</span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

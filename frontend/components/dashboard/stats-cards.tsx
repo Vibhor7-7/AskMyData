@@ -1,39 +1,18 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { FileText, MessageSquare, Calendar, TrendingUp } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { api } from "@/lib/api"
 
-const stats = [
-  {
-    label: "Files Uploaded",
-    value: "12",
-    change: "+3 this week",
-    icon: FileText,
-    gradient: "from-emerald-500 to-emerald-600",
-  },
-  {
-    label: "Questions Asked",
-    value: "47",
-    change: "+12 this week",
-    icon: MessageSquare,
-    gradient: "from-emerald-500 to-blue-500",
-  },
-  {
-    label: "Last Upload",
-    value: "2 hours ago",
-    change: "sales_data.csv",
-    icon: Calendar,
-    gradient: "from-blue-500 to-blue-600",
-  },
-  {
-    label: "Insights Generated",
-    value: "156",
-    change: "+28 this month",
-    icon: TrendingUp,
-    gradient: "from-blue-600 to-indigo-600",
-  },
-]
+interface Stats {
+  label: string
+  value: string
+  change: string
+  icon: any
+  gradient: string
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -48,7 +27,100 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 }
 
+function formatTimeAgo(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+  
+  if (seconds < 60) return 'Just now'
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`
+  return `${Math.floor(seconds / 86400)} days ago`
+}
+
 export function StatsCards() {
+  const [stats, setStats] = useState<Stats[]>([
+    {
+      label: "Files Uploaded",
+      value: "0",
+      change: "Loading...",
+      icon: FileText,
+      gradient: "from-emerald-500 to-emerald-600",
+    },
+    {
+      label: "Questions Asked",
+      value: "0",
+      change: "Loading...",
+      icon: MessageSquare,
+      gradient: "from-emerald-500 to-blue-500",
+    },
+    {
+      label: "Last Upload",
+      value: "N/A",
+      change: "No files yet",
+      icon: Calendar,
+      gradient: "from-blue-500 to-blue-600",
+    },
+    {
+      label: "Insights Generated",
+      value: "0",
+      change: "Total questions",
+      icon: TrendingUp,
+      gradient: "from-blue-600 to-indigo-600",
+    },
+  ])
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [filesResponse, historyResponse] = await Promise.all([
+          api.files.list(),
+          api.ask.getHistory(),
+        ])
+
+        const files = filesResponse.files
+        const history = historyResponse.history
+
+        const lastFile = files.length > 0 ? files[0] : null
+
+        setStats([
+          {
+            label: "Files Uploaded",
+            value: files.length.toString(),
+            change: files.length > 0 ? `${files.length} total files` : "No files yet",
+            icon: FileText,
+            gradient: "from-emerald-500 to-emerald-600",
+          },
+          {
+            label: "Questions Asked",
+            value: history.length.toString(),
+            change: history.length > 0 ? `${history.length} total questions` : "No questions yet",
+            icon: MessageSquare,
+            gradient: "from-emerald-500 to-blue-500",
+          },
+          {
+            label: "Last Upload",
+            value: lastFile ? formatTimeAgo(lastFile.upload_date) : "N/A",
+            change: lastFile ? lastFile.original_filename : "No files yet",
+            icon: Calendar,
+            gradient: "from-blue-500 to-blue-600",
+          },
+          {
+            label: "Insights Generated",
+            value: history.length.toString(),
+            change: `From ${files.length} files`,
+            icon: TrendingUp,
+            gradient: "from-blue-600 to-indigo-600",
+          },
+        ])
+      } catch (error) {
+        console.error('Failed to fetch stats:', error)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
   return (
     <motion.div
       variants={containerVariants}

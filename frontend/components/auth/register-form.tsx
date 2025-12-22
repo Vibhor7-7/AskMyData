@@ -8,9 +8,12 @@ import { Eye, EyeOff, ArrowRight, Loader2, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
+import { api } from "@/lib/api"
 
 export function RegisterForm() {
   const router = useRouter()
+  const { toast } = useToast()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -32,12 +35,42 @@ export function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!passwordsMatch) return
+    if (!passwordsMatch) {
+      toast({
+        title: "Passwords don't match",
+        description: "Please make sure your passwords match",
+        variant: "destructive",
+      })
+      return
+    }
+    
     setIsLoading(true)
-    // Simulate registration - in production, replace with real auth
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    router.push("/dashboard")
+    
+    try {
+      // Call backend API
+      const response = await api.auth.register({
+        fullname: formData.fullName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      })
+
+      if (response.success) {
+        toast({
+          title: "Registration successful!",
+          description: `Welcome, ${response.user.fullname}!`,
+        })
+        router.push("/dashboard")
+      }
+    } catch (error: any) {
+      toast({
+        title: "Registration failed",
+        description: error.message || "An error occurred during registration",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

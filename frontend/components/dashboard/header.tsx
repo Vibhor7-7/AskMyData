@@ -1,10 +1,12 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Bell, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { api } from "@/lib/api"
 
 interface DashboardHeaderProps {
   title: string
@@ -12,6 +14,26 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ title, subtitle }: DashboardHeaderProps) {
+  const [userInitials, setUserInitials] = useState("U")
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await api.auth.getCurrentUser()
+        const initials = user.username
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2)
+        setUserInitials(initials)
+      } catch (error) {
+        console.error('Failed to fetch user:', error)
+      }
+    }
+    fetchUser()
+  }, [])
+
   return (
     <header className="flex items-center justify-between mb-8">
       <div>
@@ -34,7 +56,7 @@ export function DashboardHeader({ title, subtitle }: DashboardHeaderProps) {
 
         <Avatar>
           <AvatarImage src="/diverse-avatars.png" alt="User" />
-          <AvatarFallback className="gradient-bg text-primary-foreground">JD</AvatarFallback>
+          <AvatarFallback className="gradient-bg text-primary-foreground">{userInitials}</AvatarFallback>
         </Avatar>
       </div>
     </header>
