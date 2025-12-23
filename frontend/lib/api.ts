@@ -32,7 +32,9 @@ export interface FileInfo {
   upload_date: string;
   num_rows: number;
   num_columns: number;
-  num_chunks?: number;
+  file_size: number;
+  collection_name: string;
+  num_chunks: number;
 }
 
 export interface ChatMessage {

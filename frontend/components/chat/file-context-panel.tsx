@@ -1,35 +1,61 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { FileText, Database, Calendar, Hash, Columns, ChevronDown, ChevronUp } from "lucide-react"
-import { useState } from "react"
+import { FileText, Database, Calendar, Hash, Columns, ChevronDown, ChevronUp, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { api, type FileInfo } from "@/lib/api"
 
-const fileInfo = {
-  name: "sales_data.csv",
-  type: "CSV",
-  size: "2.4 MB",
-  rows: 8547,
-  columns: 12,
-  lastModified: "2 hours ago",
-  columnNames: [
-    "date",
-    "product_id",
-    "product_name",
-    "category",
-    "quantity",
-    "unit_price",
-    "total_revenue",
-    "region",
-    "salesperson",
-    "customer_id",
-    "discount",
-    "profit_margin",
-  ],
+function formatTimeAgo(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+  
+  if (seconds < 60) return 'Just now'
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`
+  return `${Math.floor(seconds / 86400)} days ago`
 }
 
-export function FileContextPanel() {
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+interface FileContextPanelProps {
+  selectedFileId?: number
+}
+
+export function FileContextPanel({ selectedFileId }: FileContextPanelProps) {
   const [showColumns, setShowColumns] = useState(false)
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchFileInfo = async () => {
+      setIsLoading(true)
+      try {
+        if (selectedFileId) {
+          // Fetch specific file by ID
+          const file = await api.files.get(selectedFileId)
+          setFileInfo(file.file)
+        } else {
+          // Fetch most recent file
+          const response = await api.files.list()
+          if (response.files.length > 0) {
+            setFileInfo(response.files[0])
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch file info:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchFileInfo()
+  }, [selectedFileId])
 
   return (
     <motion.div
@@ -47,80 +73,65 @@ export function FileContextPanel() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* File Info */}
-          <div className="p-4 rounded-xl bg-secondary/30">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-emerald-500" />
-              </div>
-              <div>
-                <p className="font-semibold">{fileInfo.name}</p>
-                <p className="text-sm text-muted-foreground">{fileInfo.type} File</p>
-              </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
             </div>
-
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="flex items-center gap-2">
-                <Hash className="w-4 h-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Rows:</span>
-                <span className="font-medium">{fileInfo.rows.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Columns className="w-4 h-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Cols:</span>
-                <span className="font-medium">{fileInfo.columns}</span>
-              </div>
-              <div className="flex items-center gap-2 col-span-2">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Updated:</span>
-                <span className="font-medium">{fileInfo.lastModified}</span>
-              </div>
+          ) : !fileInfo ? (
+            <div className="text-center py-8">
+              <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+              <p className="text-sm text-muted-foreground">No files uploaded yet</p>
+              <p className="text-xs text-muted-foreground mt-1">Upload a file to see context</p>
             </div>
-          </div>
-
-          {/* Column Names */}
-          <div>
-            <button
-              onClick={() => setShowColumns(!showColumns)}
-              className="flex items-center justify-between w-full p-3 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors"
-            >
-              <span className="font-medium">Column Names</span>
-              {showColumns ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
-            {showColumns && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-2 p-3 rounded-xl bg-secondary/20"
-              >
-                <div className="flex flex-wrap gap-2">
-                  {fileInfo.columnNames.map((col) => (
-                    <span
-                      key={col}
-                      className="px-2 py-1 text-xs rounded-md bg-emerald-500/10 text-emerald-500 font-mono"
-                    >
-                      {col}
-                    </span>
-                  ))}
+          ) : (
+            <>
+              {/* File Info */}
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20 flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-emerald-500" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">{fileInfo.original_filename}</p>
+                    <p className="text-sm text-muted-foreground">{fileInfo.file_type.toUpperCase()} File</p>
+                  </div>
                 </div>
-              </motion.div>
-            )}
-          </div>
 
-          {/* Quick Stats */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20">
-            <p className="text-sm font-medium mb-2">Data Summary</p>
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <p>Total Revenue: $1.2M</p>
-              <p>Unique Products: 156</p>
-              <p>Date Range: Jan - Dec 2024</p>
-            </div>
-          </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Hash className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Rows:</span>
+                    <span className="font-medium">{fileInfo.num_rows.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Columns className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Cols:</span>
+                    <span className="font-medium">{fileInfo.num_columns}</span>
+                  </div>
+                  <div className="flex items-center gap-2 col-span-2">
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Updated:</span>
+                    <span className="font-medium">{formatTimeAgo(fileInfo.upload_date)}</span>
+                  </div>
+                  <div className="flex items-center gap-2 col-span-2">
+                    <Database className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Size:</span>
+                    <span className="font-medium">{formatFileSize(fileInfo.file_size)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20">
+                <p className="text-sm font-medium mb-2">Data Summary</p>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p>Total Chunks: {fileInfo.num_chunks}</p>
+                  <p>Collection: {fileInfo.collection_name}</p>
+                  <p>Uploaded: {new Date(fileInfo.upload_date).toLocaleDateString()}</p>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </motion.div>

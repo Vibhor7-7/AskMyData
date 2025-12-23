@@ -15,7 +15,11 @@ interface Message {
   timestamp: Date
 }
 
-export function ChatInterface() {
+interface ChatInterfaceProps {
+  selectedFileId?: number
+}
+
+export function ChatInterface({ selectedFileId }: ChatInterfaceProps) {
   const { toast } = useToast()
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -78,9 +82,9 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, userMessage])
     setIsLoading(true)
 
-    // Call backend API
     try {
-      const response = await api.ask.ask(content)
+      // Call backend API with optional file_id
+      const response = await api.ask.ask(content, selectedFileId)
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -115,7 +119,7 @@ export function ChatInterface() {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-background">
-      <FileContextPanel />
+      <FileContextPanel selectedFileId={selectedFileId} />
       <div className="flex-1 flex flex-col">
         <ChatMessages messages={messages} isLoading={isLoading} />
         <ChatInput onSend={handleSend} isLoading={isLoading} />

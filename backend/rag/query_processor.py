@@ -48,7 +48,8 @@ class QueryProcessor:
             self,
             question: str, 
             top_k: int =5,
-            include_metadata: bool = True
+            include_metadata: bool = True,
+            filename_filter: str = None
     )-> Dict:
         """
          Complete RAG pipeline: Question -> Answer
@@ -66,6 +67,7 @@ class QueryProcessor:
             question: User's question
             top_k: How many context chunks to retrieve
             include_metadata: Whether to include debug info
+            filename_filter: Optional - filter results by specific filename
         
         Returns:
             Dict with answer and metadata
@@ -81,9 +83,17 @@ class QueryProcessor:
         
         #Step 2: Search Vector Store
         print('\n[2/4] Searching Vector Store...')
+        
+        # Build where filter if filename specified
+        where_filter = None
+        if filename_filter:
+            where_filter = {"filename": filename_filter}
+            print(f"       Filtering by filename: {filename_filter}")
+        
         search_results = self.vector_store.search(
             query_embedding=question_embedding,
-            top_k=top_k
+            top_k=top_k,
+            where_filter=where_filter
         )
         documents = search_results['documents']
         metadatas = search_results['metadatas']

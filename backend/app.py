@@ -566,7 +566,7 @@ def get_files():
     c = conn.cursor()
     c.execute(
         """SELECT file_id, filename, original_filename, file_type, 
-                  upload_date, num_rows, num_columns 
+                  upload_date, num_rows, num_columns, file_path, collection_name 
            FROM files WHERE username = ? 
            ORDER BY upload_date DESC""",
         (username,)
@@ -576,6 +576,24 @@ def get_files():
     
     files = []
     for row in rows:
+        # Get file size from file_path
+        file_size = 0
+        try:
+            if row[7] and os.path.exists(row[7]):
+                file_size = os.path.getsize(row[7])
+        except:
+            pass
+        
+        # Estimate num_chunks (if collection exists, try to get count)
+        num_chunks = 0
+        try:
+            vector_store = get_vector_store()
+            collection = vector_store.client.get_collection(row[8])  # collection_name
+            num_chunks = collection.count()
+        except:
+            # If can't get from ChromaDB, estimate from rows
+            num_chunks = row[5]  # Approximate: one chunk per row
+        
         files.append({
             "file_id": row[0],
             "filename": row[1],
@@ -583,7 +601,10 @@ def get_files():
             "file_type": row[3],
             "upload_date": row[4],
             "num_rows": row[5],
-            "num_columns": row[6]
+            "num_columns": row[6],
+            "file_size": file_size,
+            "collection_name": row[8],
+            "num_chunks": num_chunks
         })
     
     return jsonify({
@@ -717,7 +738,8 @@ def ask_question():
                 "suggestion": "Use POST /api/files/upload to upload data files"
             }), 400
         
-        # Get file info for response
+        # Get file info for filtering and response
+        filename_filter = None
         if file_id:
             c.execute(
                 "SELECT original_filename FROM files WHERE file_id = ? AND username = ?",
@@ -727,18 +749,32 @@ def ask_question():
             if not file_row:
                 conn.close()
                 return jsonify({"error": "File not found"}), 404
+            filename_filter = file_row[0]
             sources = [file_row[0]]
         else:
+            # No file_id specified - use most recent file
             c.execute(
-                "SELECT DISTINCT original_filename FROM files WHERE username = ?",
+                "SELECT original_filename FROM files WHERE username = ? ORDER BY upload_date DESC LIMIT 1",
                 (username,)
             )
-            sources = [row[0] for row in c.fetchall()]
+            file_row = c.fetchone()
+            if file_row:
+                filename_filter = file_row[0]
+                sources = [file_row[0]]
+            else:
+                # Fallback: get all files
+                c.execute(
+                    "SELECT DISTINCT original_filename FROM files WHERE username = ?",
+                    (username,)
+                )
+                sources = [row[0] for row in c.fetchall()]
         
         conn.close()
         
         print(f"Processing question: {question}")
         print(f"Collection: {collection_name}")
+        if filename_filter:
+            print(f"Filtering by file: {filename_filter}")
         
         # Initialize QueryProcessor with collection name and persist directory
         query_processor = QueryProcessor(
@@ -748,9 +784,9 @@ def ask_question():
             chroma_persist_dir=CHROMA_DB_PATH
         )
         
-        # Process the query
+        # Process the query with filename filter
         print("Running RAG pipeline...")
-        result = query_processor.process_query(question)
+        result = query_processor.process_query(question, filename_filter=filename_filter)
         
         if not result or 'answer' not in result:
             return jsonify({

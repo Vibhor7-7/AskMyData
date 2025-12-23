@@ -79,23 +79,30 @@ class VectorStore:
         )
         print(f' Added {len(chunks)} chunks to collection {self.collection.name}')
 
-    def search(self, query_embedding: List[float], top_k: int =5)->Dict: 
+    def search(self, query_embedding: List[float], top_k: int =5, where_filter: Dict = None)->Dict: 
         """
         Search for similar chunks using query embedding 
 
         Args: 
             query_embedding: Embedding of user's question 
             top_k: Number of results to return (sort of like pd.head())
+            where_filter: Optional metadata filter (e.g., {"filename": "data.csv"})
         
         Returns: 
             Dict with 'documents', 'metadatas', and 'distances' 
         """
         if not hasattr(self, 'collection'):
             raise ValueError("No collection seleted.")
-        results = self.collection.query(
-            query_embeddings=[query_embedding],
-            n_results=top_k
-        )
+        
+        query_params = {
+            "query_embeddings": [query_embedding],
+            "n_results": top_k
+        }
+        
+        if where_filter:
+            query_params["where"] = where_filter
+        
+        results = self.collection.query(**query_params)
 
         return {
             'documents': results['documents'][0],  # Actual text chunks

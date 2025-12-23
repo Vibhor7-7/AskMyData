@@ -131,7 +131,7 @@ export default function FilesPage() {
 
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground mr-4">{formatTimeAgo(file.upload_date)}</span>
-                  <Link href="/chat">
+                  <Link href={`/chat?file_id=${file.file_id}`}>
                     <Button variant="outline" size="sm" className="gap-2 bg-transparent">
                       <MessageSquare className="w-4 h-4" />
                       Chat
