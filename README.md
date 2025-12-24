@@ -6,7 +6,7 @@ AskMyData is an intelligent web application that allows users to upload their ow
 
 ---
 
-## 📖 Project Overview
+## Project Overview
 
 ### The Problem
 Traditional data analysis requires knowledge of SQL, Python, or spreadsheet formulas. Non-technical users struggle to extract insights from their data, and even technical users face friction when exploring unfamiliar datasets.
@@ -28,39 +28,39 @@ AskMyData bridges this gap by enabling natural language interaction with your da
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 🗂️ Multi-Format File Support
+###  Multi-Format File Support
 - **CSV:** Tabular data with automatic type detection
 - **JSON:** Nested data structures flattened intelligently
 - **PDF:** Text extraction with table detection (powered by pdfplumber)
 - **iCal:** Calendar events parsed into queryable format
 
-### 🤖 RAG-Based Question Answering
+### RAG-Based Question Answering
 - **Semantic Search:** Finds relevant data chunks using vector embeddings
 - **Context-Aware Responses:** LLM generates answers using retrieved context
 - **Source Attribution:** Shows which data chunks were used for each answer
 - **Multi-File Support:** Query specific files or search across all uploads
 
-### 🔍 Vector Embeddings & Search
+### Vector Embeddings & Search
 - **ChromaDB Integration:** Persistent vector database for fast similarity search
 - **Nomic Embeddings:** 768-dimensional embeddings via Ollama
 - **Metadata Filtering:** Queries isolated to specific files
 - **Efficient Chunking:** Row-based chunking for structured data, semantic chunking for documents
 
-### 🚀 Local LLM Inference
+### ocal LLM Inference
 - **Ollama Integration:** Run models completely offline
 - **llama3.2 Model:** Fast, capable 3B parameter model
 - **Custom Prompts:** Tailored prompts for data analysis vs document Q&A
 - **Streaming Support:** Real-time response generation (future enhancement)
 
-### 📊 User Management & Persistence
+### User Management & Persistence
 - **Authentication:** Secure session-based login with password hashing
 - **Multi-User Support:** Each user's files and chats are isolated
 - **Chat History:** Persistent conversation logs
 - **Dashboard Analytics:** File counts, query stats, recent activity
 
-### 🎨 Modern UI/UX
+### Modern UI/UX
 - **Next.js Frontend:** Fast, responsive React application
 - **Dark/Light Mode:** Theme toggle with system preference detection
 - **Real-Time Updates:** Instant feedback on uploads and queries
@@ -68,7 +68,7 @@ AskMyData bridges this gap by enabling natural language interaction with your da
 
 ---
 
-## 🏗️ High-Level Architecture
+## High-Level Architecture
 
 ### System Overview
 
@@ -249,7 +249,7 @@ Context + Question → Prompt Template → Ollama (llama3.2) → Answer
 ---
 
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 ```bash
