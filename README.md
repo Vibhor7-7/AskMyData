@@ -1,4 +1,4 @@
-# 🧠 AskMyData
+# AskMyData
 
 **A Full-Stack RAG-Powered Data Analysis Platform**
 
@@ -248,40 +248,6 @@ Context + Question → Prompt Template → Ollama (llama3.2) → Answer
 
 ---
 
-## 📚 What I Learned
-
-### RAG & Vector Databases
-- **Chunking Strategy Matters:** Row-based chunking works well for tabular data, but documents need semantic chunking (paragraphs, not pages)
-- **Metadata is Powerful:** Filtering by filename/source in ChromaDB enables multi-file collections without cross-contamination
-- **Embedding Quality:** Nomic-embed-text provides excellent semantic search despite being lightweight (768-dim vs 1536-dim for OpenAI)
-- **Top-K Tuning:** More context (k=10) improves answer quality but increases latency and LLM token usage
-
-### Prompt Engineering & Grounding
-- **Explicit Instructions:** LLMs need clear, structured prompts ("Answer based ONLY on the data provided")
-- **Context Window Management:** Too much context confuses small models; too little loses important details
-- **Grounding Prevents Hallucinations:** By providing retrieved chunks as context, the model stays factual
-- **Template Adaptation:** Different data types (CSV vs resume PDF) benefit from specialized prompt templates
-
-### Full-Stack Integration
-- **Type Safety End-to-End:** TypeScript on frontend + clear API contracts reduced bugs significantly
-- **Session Management:** Flask sessions work well for authentication without JWT complexity
-- **CORS Configuration:** Proper CORS setup is critical for local development (localhost:3000 ↔ localhost:5001)
-- **Error Handling:** Consistent error responses (ApiError class) improve debugging and UX
-- **State Management:** React hooks are sufficient for medium-complexity apps; no need for Redux
-
-### Performance & Optimization
-- **Lazy Loading:** Initializing Ollama connections only when needed reduces startup time
-- **Batch Embeddings:** Processing 50+ chunks at once is 10x faster than sequential
-- **Collection Pooling:** Reusing ChromaDB collections across files saves space and improves search speed
-- **Frontend Caching:** useEffect dependencies prevent unnecessary re-fetches
-
-### Challenges Overcome
-1. **ChromaDB Collection Conflicts:** Initially created one collection per file; switched to per-user collections with metadata filtering
-2. **PDF Parsing Quality:** pdfplumber struggles with multi-column layouts; added custom chunking logic
-3. **Model Size vs Quality:** llama3.2 (3B) is fast but limited; balancing speed vs accuracy is key
-4. **File Context Switching:** Needed URL parameters + API changes to query specific files instead of always using the latest
-
----
 
 ## 🚀 Getting Started
 
@@ -354,38 +320,9 @@ Navigate to `http://localhost:3000`
 
 ---
 
-## 🔮 Future Enhancements
-
-- [ ] Streaming responses for real-time answer generation
-- [ ] CSV preview with data profiling (nulls, types, distributions)
-- [ ] Chart generation from natural language ("show me a bar chart of revenue by region")
-- [ ] Multi-file queries ("compare sales.csv with last_year.csv")
-- [ ] Export chat history as PDF/Markdown
-- [ ] Docker containerization for one-click deployment
-- [ ] Support for Excel (.xlsx) and Parquet files
-- [ ] Fine-tuned prompt templates per file type
-- [ ] Upgrade to larger models (llama3.1:8b, mistral)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
 ## 📄 License
 
 This project is open source and available under the MIT License.
-
----
-
-## 🙏 Acknowledgments
-
-- **Ollama** for making local LLMs accessible
-- **ChromaDB** for a simple yet powerful vector database
-- **Next.js** and **Flask** for excellent developer experience
-- **Radix UI** for accessible component primitives
 
 ---
 
