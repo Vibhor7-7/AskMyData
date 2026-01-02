@@ -309,17 +309,6 @@ Navigate to `http://localhost:3000`
 
 ---
 
-## 📖 Usage Guide
-
-1. **Register/Login:** Create an account or log in
-2. **Upload Files:** Drag and drop CSV, JSON, PDF, or iCal files
-3. **Wait for Processing:** Files are parsed, chunked, embedded, and stored
-4. **Ask Questions:** Type natural language questions about your data
-5. **View Context:** See which data chunks were used for each answer
-6. **Manage Files:** View all uploads, delete files, or switch between files in chat
-
----
-
 ## 📄 License
 
 This project is open source and available under the MIT License.
