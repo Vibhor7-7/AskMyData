@@ -19,13 +19,19 @@ def count_tokens(text: str, model: str = "gpt-3.5-turbo") -> int:
     encoding = tiktoken.encoding_for_model(model)
     return len(encoding.encode(text))
 
-def row_to_text(row:pd.Series, include_column_names:bool =True) -> str:
-    """Convert a single DataFrame row to readable text"""
+def row_to_text(row: pd.Series, include_column_names: bool = True) -> str:
+    """Convert a single DataFrame row to readable text, excluding metadata"""
+    # Exclude standard metadata columns
+    metadata_cols = ['source_file', 'content_type', 'row_index']
+    
+    # Filter out metadata columns
+    data_cols = {k: v for k, v in row.items() if k not in metadata_cols}
+    
     if include_column_names:
-        parts = [f"{col}: {val}" for col, val in row.items()]
+        parts = [f"{col}: {val}" for col, val in data_cols.items()]
         return ", ".join(parts)
-    else: 
-        return ", ".join(str(val) for val in row.values)
+    else:
+        return ", ".join(str(val) for val in data_cols.values())
     
 def dataframe_to_chunks(
         df:pd.DataFrame,

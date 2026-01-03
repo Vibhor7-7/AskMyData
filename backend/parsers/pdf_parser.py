@@ -180,38 +180,60 @@ def parse_text_structured(file_path):
 
 def parse_pdf_to_df(file_path):
     """
-    Unified DataFrame output for any PDF content
-    Returns a single STANDARDIZED DataFrame regardless of content type
+    Parse PDF with improved chunking for better RAG
     """
-    result = parse_pdf_file(file_path)
     filename = os.path.basename(file_path)
+    result = parse_pdf_file(file_path)
     
-    # Priority 1: If tables exist, combine all tables
+    # Priority 1: If tables exist, use them
     if result['tables']:
-        # Return all tables concatenated
         combined_df = pd.concat(result['tables'], ignore_index=True)
-        standardized_df = standardize_dataframe(combined_df, filename, 'pdf_table')
-        return standardized_df
+        return standardize_dataframe(combined_df, filename, 'pdf_table')
     
-    # Priority 2: If only text, create structured DataFrame
-    else:
-        # Convert text to page-level DataFrame
-        pages_data = []
-        text_by_page = result['text'].split('--- Page')
-        
-        for page_section in text_by_page[1:]:  # Skip first empty split
-            parts = page_section.split('---\n', 1)
-            if len(parts) == 2:
-                page_num = parts[0].strip()
-                content = parts[1].strip()
-                pages_data.append({
-                    'page': page_num,
-                    'content': content
-                })
-        
-        df = pd.DataFrame(pages_data)
-        standardized_df = standardize_dataframe(df, filename, 'pdf_text')
-        return standardized_df
+    # Priority 2: For text PDFs, chunk by paragraphs not pages
+    text = result['text']
+    
+    if not text.strip():
+        return pd.DataFrame(columns=['source_file', 'content_type', 'row_index'])
+    
+    # Split into meaningful chunks (paragraphs or sections)
+    chunks = split_into_semantic_chunks(text)
+    
+    df = pd.DataFrame({
+        'content': chunks,
+        'chunk_size': [len(c) for c in chunks]
+    })
+    
+    return standardize_dataframe(df, filename, 'pdf_text')
+
+
+def split_into_semantic_chunks(text: str, max_chunk_size: int = 500) -> list[str]:
+    """
+    Split text into semantic chunks (by paragraphs, preserving context)
+    """
+    # Remove page markers
+    text = re.sub(r'--- Page \d+ ---', '', text)
+    
+    # Split by double newlines (paragraphs)
+    paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
+    
+    chunks = []
+    current_chunk = ""
+    
+    for para in paragraphs:
+        # If adding this paragraph would exceed max size
+        if len(current_chunk) + len(para) > max_chunk_size:
+            if current_chunk:
+                chunks.append(current_chunk.strip())
+            current_chunk = para
+        else:
+            current_chunk += "\n\n" + para if current_chunk else para
+    
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+    
+    return chunks
+
 
 def analyze_pdf_type(file_path):
     """
