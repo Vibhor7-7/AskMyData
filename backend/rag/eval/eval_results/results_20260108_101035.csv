@@ -1,0 +1,3 @@
+question,category,semantic_similarity,keyword_match,exact_match,latency_seconds,success
+How many rows are in the dataset?,counting,0.6144401356698639,0.0,False,0.03118109703063965,False
+What columns are available?,factual,0.4613132660087863,0.0,False,0.011412858963012695,False

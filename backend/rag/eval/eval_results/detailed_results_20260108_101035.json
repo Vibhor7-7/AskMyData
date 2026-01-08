@@ -1,0 +1,38 @@
+[
+  {
+    "question": "How many rows are in the dataset?",
+    "expected_answer": "Number varies based on your data",
+    "generated_answer": "I couldn't find any relevant data to answer this question.",
+    "category": "counting",
+    "success": false,
+    "latency_seconds": 0.03118109703063965,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.6144401356698639,
+      "exact_match": false,
+      "keyword_match_score": 0.0,
+      "length_ratio": 1.8125,
+      "generated_length": 58,
+      "expected_length": 32
+    },
+    "num_chunks_retrieved": 0
+  },
+  {
+    "question": "What columns are available?",
+    "expected_answer": "Depends on your CSV",
+    "generated_answer": "I couldn't find any relevant data to answer this question.",
+    "category": "factual",
+    "success": false,
+    "latency_seconds": 0.011412858963012695,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.4613132660087863,
+      "exact_match": false,
+      "keyword_match_score": 0.0,
+      "length_ratio": 3.0526315789473686,
+      "generated_length": 58,
+      "expected_length": 19
+    },
+    "num_chunks_retrieved": 0
+  }
+]

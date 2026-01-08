@@ -1,0 +1,18 @@
+{
+  "query_relevance_score": 0.537876700839325,
+  "query_relevance_percentage": 53.787670083932504,
+  "exact_match_rate": 0.0,
+  "success_rate": 0.0,
+  "avg_semantic_similarity": 0.537876700839325,
+  "avg_keyword_match_score": 0.0,
+  "semantic_similarity_std": 0.10827704791921657,
+  "avg_precision_at_k": null,
+  "avg_recall_at_k": null,
+  "avg_mrr": null,
+  "avg_latency_seconds": 0.021296977996826172,
+  "median_latency_seconds": 0.021296977996826172,
+  "p95_latency_seconds": 0.0301926851272583,
+  "throughput_queries_per_second": 22.499518553783844,
+  "total_queries": 2,
+  "total_time_seconds": 0.08889079093933105
+}
