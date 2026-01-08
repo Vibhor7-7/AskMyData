@@ -1,0 +1,39 @@
+# backend/rag/test_dataset_template.json
+
+[
+  {
+    "question": "What is the total rent paid?",
+    "expected_answer": "$900",
+    "expected_keywords": ["900", "rent", "total"],
+    "category": "aggregation",
+    "difficulty": "easy"
+  },
+  {
+    "question": "How many meetings are scheduled in January?",
+    "expected_answer": "5 meetings",
+    "expected_keywords": ["5", "five", "January", "meetings"],
+    "category": "counting",
+    "difficulty": "medium"
+  },
+  {
+    "question": "Who paid the highest amount?",
+    "expected_answer": "John paid $500",
+    "expected_keywords": ["John", "500", "highest"],
+    "category": "comparison",
+    "difficulty": "medium"
+  },
+  {
+    "question": "List all vendors mentioned in the dataset",
+    "expected_answer": "Amazon, Netflix, Spotify",
+    "expected_keywords": ["Amazon", "Netflix", "Spotify"],
+    "category": "enumeration",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What is the average transaction amount?",
+    "expected_answer": "$300",
+    "expected_keywords": ["300", "average"],
+    "category": "aggregation",
+    "difficulty": "easy"
+  }
+]
