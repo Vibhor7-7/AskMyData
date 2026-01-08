@@ -1,0 +1,56 @@
+[
+  {
+    "question": "What is the average age?",
+    "expected_answer": "30 years old",
+    "generated_answer": "To calculate the average age, I will add up the ages of all individuals and divide by the total number of individuals.\n\nTotal age = Alice's age + Charlie's age + Bob's age\n= 25 + 35 + 30\n= 90\n\nTotal number of individuals = 3\n\nAverage age = Total age / Total number of individuals\n= 90 / 3\n= 30",
+    "category": "aggregation",
+    "success": true,
+    "latency_seconds": 3.118453025817871,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.6308696590388335,
+      "exact_match": false,
+      "keyword_match_score": 1.0,
+      "length_ratio": 24.416666666666668,
+      "generated_length": 293,
+      "expected_length": 12
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "Who lives in New York City?",
+    "expected_answer": "Alice lives in New York City",
+    "generated_answer": "Alice lives in New York City (city: NYC).",
+    "category": "factual",
+    "success": true,
+    "latency_seconds": 0.3925449848175049,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.9817800445213035,
+      "exact_match": false,
+      "keyword_match_score": 1.0,
+      "length_ratio": 1.4642857142857142,
+      "generated_length": 41,
+      "expected_length": 28
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "How many people are in the dataset?",
+    "expected_answer": "3 people",
+    "generated_answer": "There are 3 people in the dataset:\n\n1. Bob\n2. Charlie\n3. Alice",
+    "category": "counting",
+    "success": true,
+    "latency_seconds": 0.8945207595825195,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.7466456716110158,
+      "exact_match": false,
+      "keyword_match_score": 0.6666666666666666,
+      "length_ratio": 7.75,
+      "generated_length": 62,
+      "expected_length": 8
+    },
+    "num_chunks_retrieved": 3
+  }
+]

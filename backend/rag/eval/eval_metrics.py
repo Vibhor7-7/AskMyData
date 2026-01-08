@@ -16,11 +16,20 @@ Usage:
 import time
 import json
 import os
+import sys
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 import pandas as pd
-from ..query_processor import QueryProcessor
-from ..embeddings import EmbeddingGenerator, cosine_similarity
+
+# Add parent directories to path for imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+rag_dir = os.path.dirname(current_dir)
+backend_dir = os.path.dirname(rag_dir)
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
+from rag.query_processor import QueryProcessor
+from rag.embeddings import EmbeddingGenerator, cosine_similarity
 
 
 class RAGEvaluator:
@@ -211,7 +220,7 @@ class RAGEvaluator:
             "latency_seconds": latency,
             "retrieval_metrics": retrieval_metrics,
             "answer_metrics": answer_metrics,
-            "num_chunks_retrieved": result["num_chunks_used"],
+            "num_chunks_retrieved": result.get("num_chunks_used", 0),
         }
 
     def run_evaluation(

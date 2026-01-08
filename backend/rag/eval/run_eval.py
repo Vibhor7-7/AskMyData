@@ -10,10 +10,18 @@ import json
 import os
 import sys
 
-# Add parent directory to path to import modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add parent directories to path to import modules
+current_dir = os.path.dirname(os.path.abspath(__file__))
+eval_dir = current_dir
+rag_dir = os.path.dirname(eval_dir)
+backend_dir = os.path.dirname(rag_dir)
 
-from eval_metrics import RAGEvaluator
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+if eval_dir not in sys.path:
+    sys.path.insert(0, eval_dir)
+
+from rag.eval.eval_metrics import RAGEvaluator
 
 
 def example_1_quick_evaluation():
