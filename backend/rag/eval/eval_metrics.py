@@ -19,8 +19,8 @@ import os
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 import pandas as pd
-from .query_processor import QueryProcessor
-from .embeddings import EmbeddingGenerator, cosine_similarity
+from ..query_processor import QueryProcessor
+from ..embeddings import EmbeddingGenerator, cosine_similarity
 
 
 class RAGEvaluator:

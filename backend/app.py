@@ -385,9 +385,7 @@ def get_current_user():
     
     return jsonify({"authenticated": False}), 401
 
-# ============================================
-# FILE ENDPOINTS (TODO: Will implement next)
-# ============================================
+
 
 @app.route('/api/files/upload', methods=['POST'])
 @login_required
@@ -684,9 +682,8 @@ def delete_file(file_id):
         "message": "File deleted successfully"
     })
 
-# ============================================
 # QUERY ENDPOINT
-# ============================================
+
 
 @app.route('/api/ask', methods=['POST'])
 @login_required
@@ -868,9 +865,8 @@ def get_chat_history():
         "count": len(history)
     })
 
-# ============================================
 # ERROR HANDLERS
-# ============================================
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -888,9 +884,9 @@ def internal_error(error):
         "status": 500
     }), 500
 
-# ============================================
+
 # RUN SERVER
-# ============================================
+
 
 if __name__ == '__main__':
     PORT = 5001  # Changed from 5000 due to macOS AirPlay using port 5000
