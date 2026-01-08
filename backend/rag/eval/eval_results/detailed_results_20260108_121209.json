@@ -1,0 +1,110 @@
+[
+  {
+    "question": "What is the total?",
+    "expected_answer": "500",
+    "generated_answer": "To find the total, I will add up the ages of all individuals:\n\nBob's age: 30\nAlice's age: 25\nCharlie's age: 35\n\nTotal = 30 + 25 + 35 = 90\n\nTherefore, the total is 90.",
+    "category": "aggregation",
+    "success": true,
+    "latency_seconds": 2.478224039077759,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.4410024982172773,
+      "exact_match": false,
+      "keyword_match_score": 0.5,
+      "length_ratio": 55.333333333333336,
+      "generated_length": 166,
+      "expected_length": 3
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "What is the average?",
+    "expected_answer": "50",
+    "generated_answer": "To calculate the average, I will add up the ages of the individuals and divide by the total number of individuals.\n\nAge sum: 30 + 35 + 25 = 90\nNumber of individuals: 3\n\nAverage age = Age sum / Number of individuals\n= 90 / 3\n= 30",
+    "category": "aggregation",
+    "success": true,
+    "latency_seconds": 1.8113179206848145,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.5296830390567348,
+      "exact_match": false,
+      "keyword_match_score": 0.5,
+      "length_ratio": 114.0,
+      "generated_length": 228,
+      "expected_length": 2
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "Who is the manager?",
+    "expected_answer": "John Smith",
+    "generated_answer": "I cannot determine who the manager is based on the provided data context. The data only mentions names, ages, and cities, but does not include any information about job titles or positions.",
+    "category": "factual",
+    "success": true,
+    "latency_seconds": 0.9909090995788574,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.31953625277915115,
+      "exact_match": false,
+      "keyword_match_score": 0.0,
+      "length_ratio": 18.9,
+      "generated_length": 189,
+      "expected_length": 10
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "What is the address?",
+    "expected_answer": "123 Main St",
+    "generated_answer": "I cannot provide an address as it is not specified in the data context. Is there anything else I can help you with?",
+    "category": "factual",
+    "success": true,
+    "latency_seconds": 0.9566419124603271,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.32149259486226556,
+      "exact_match": false,
+      "keyword_match_score": 0.0,
+      "length_ratio": 10.454545454545455,
+      "generated_length": 115,
+      "expected_length": 11
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "How many items?",
+    "expected_answer": "10",
+    "generated_answer": "There are 3 items in the data context.",
+    "category": "counting",
+    "success": true,
+    "latency_seconds": 0.5555431842803955,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.4227163586004983,
+      "exact_match": false,
+      "keyword_match_score": 0.0,
+      "length_ratio": 19.0,
+      "generated_length": 38,
+      "expected_length": 2
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "How many categories?",
+    "expected_answer": "5",
+    "generated_answer": "Based on the provided DATA CONTEXT, there are 3 categories:\n\n1. Name (Alice, Charlie, Bob)\n2. Age (25, 35, 30)\n3. City (NYC, Chicago, LA)",
+    "category": "counting",
+    "success": true,
+    "latency_seconds": 1.3831310272216797,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.3723264997102617,
+      "exact_match": false,
+      "keyword_match_score": 0.5,
+      "length_ratio": 137.0,
+      "generated_length": 137,
+      "expected_length": 1
+    },
+    "num_chunks_retrieved": 3
+  }
+]

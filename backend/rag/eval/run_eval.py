@@ -95,10 +95,17 @@ def example_2_load_from_json():
     print("="*70 + "\n")
     
     # Step 1: Load test dataset from file
-    dataset_path = "./test_dataset_template.json"
+    # Try improved dataset first, then template
+    dataset_paths = ["./improved_test_dataset.json", "./test_dataset_template.json"]
+    dataset_path = None
     
-    if not os.path.exists(dataset_path):
-        print(f"❌ Test dataset not found at {dataset_path}")
+    for path in dataset_paths:
+        if os.path.exists(path):
+            dataset_path = path
+            break
+    
+    if not dataset_path:
+        print(f"❌ Test dataset not found")
         print("Create one using: python create_test_dataset.py --interactive")
         return None
     
@@ -394,12 +401,6 @@ Enter choice (0-6): """, end='')
     print("✓ Evaluation Complete!")
     print("="*70 + "\n")
     
-    print("Next steps:")
-    print("• Review results in ./eval_results/ directory")
-    print("• Analyze CSV file in Excel/Google Sheets")
-    print("• Compare metrics against your 85% target")
-    print("• Iterate on improvements (chunking, prompts, model choice)")
-    print("• Re-run evaluation to measure progress\n")
 
 
 if __name__ == "__main__":

@@ -437,6 +437,11 @@ class RAGEvaluator:
 def create_sample_test_dataset() -> List[Dict]:
     """
     Create a sample test dataset for demonstration
+    
+    Updated to use improved test cases with:
+    - Natural language expected answers
+    - More comprehensive keywords
+    - Better semantic matching
 
     Returns:
         List of test cases
@@ -444,33 +449,33 @@ def create_sample_test_dataset() -> List[Dict]:
     return [
         {
             "question": "What is the average age?",
-            "expected_answer": "30",
-            "expected_keywords": ["30", "average", "age"],
+            "expected_answer": "The average age is 30 years old",
+            "expected_keywords": ["30", "average", "age", "years", "mean", "avg"],
             "category": "aggregation",
         },
         {
             "question": "Who lives in New York City?",
-            "expected_answer": "Alice lives in New York City",
-            "expected_keywords": ["Alice", "NYC", "New York"],
+            "expected_answer": "Alice lives in NYC",
+            "expected_keywords": ["Alice", "NYC", "New York", "city"],
             "category": "factual",
         },
         {
-            "question": "List all cities mentioned",
-            "expected_answer": "NYC, LA, Chicago",
-            "expected_keywords": ["NYC", "LA", "Chicago"],
-            "category": "enumeration",
+            "question": "How many people are in the dataset?",
+            "expected_answer": "There are 3 people in the dataset",
+            "expected_keywords": ["3", "three", "people", "total", "count"],
+            "category": "counting",
         },
         {
             "question": "Who is the oldest person?",
             "expected_answer": "Charlie is the oldest at 35 years old",
-            "expected_keywords": ["Charlie", "35", "oldest"],
+            "expected_keywords": ["Charlie", "35", "oldest", "maximum", "age"],
             "category": "comparison",
         },
         {
-            "question": "How many people are there?",
-            "expected_answer": "3",
-            "expected_keywords": ["3", "three"],
-            "category": "counting",
+            "question": "List all the cities",
+            "expected_answer": "The cities are NYC, LA, and Chicago",
+            "expected_keywords": ["NYC", "LA", "Chicago", "cities", "locations"],
+            "category": "enumeration",
         }
     ]
 

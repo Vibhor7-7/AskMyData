@@ -1,0 +1,92 @@
+[
+  {
+    "question": "What is the average age?",
+    "expected_answer": "30",
+    "generated_answer": "To calculate the average age, I will add up the ages of all individuals and then divide by the total number of individuals.\n\nTotal age = Alice (25) + Charlie (35) + Bob (30)\nTotal age = 25 + 35 + 30\nTotal age = 90\n\nNumber of individuals = 3\n\nAverage age = Total age / Number of individuals\n= 90 / 3\n= 30",
+    "category": "aggregation",
+    "success": true,
+    "latency_seconds": 2.509160041809082,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.4896065465369813,
+      "exact_match": false,
+      "keyword_match_score": 1.0,
+      "length_ratio": 151.5,
+      "generated_length": 303,
+      "expected_length": 2
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "Who lives in New York City?",
+    "expected_answer": "Alice lives in New York City",
+    "generated_answer": "Alice lives in New York City. According to the provided data context, it is stated that \"name: Alice, age: 25, city: NYC\".",
+    "category": "factual",
+    "success": true,
+    "latency_seconds": 0.867609977722168,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.8861001284488613,
+      "exact_match": false,
+      "keyword_match_score": 1.0,
+      "length_ratio": 4.357142857142857,
+      "generated_length": 122,
+      "expected_length": 28
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "List all cities",
+    "expected_answer": "NYC, LA, Chicago",
+    "generated_answer": "The list of cities is:\n\n1. NYC\n2. Chicago\n3. LA",
+    "category": "enumeration",
+    "success": true,
+    "latency_seconds": 0.5206680297851562,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.8529327792702404,
+      "exact_match": false,
+      "keyword_match_score": 1.0,
+      "length_ratio": 2.9375,
+      "generated_length": 47,
+      "expected_length": 16
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "Who is the oldest person?",
+    "expected_answer": "Charlie is the oldest at 35 years",
+    "generated_answer": "Based on the provided data context, Charlie is the oldest person with an age of 35.",
+    "category": "comparison",
+    "success": true,
+    "latency_seconds": 0.8181099891662598,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.9371229349350907,
+      "exact_match": false,
+      "keyword_match_score": 1.0,
+      "length_ratio": 2.515151515151515,
+      "generated_length": 83,
+      "expected_length": 33
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "How many people are there?",
+    "expected_answer": "3",
+    "generated_answer": "There are 3 people mentioned in the data context:\n\n1. Bob\n2. Charlie\n3. Alice",
+    "category": "counting",
+    "success": true,
+    "latency_seconds": 0.6588857173919678,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.6374931847389083,
+      "exact_match": false,
+      "keyword_match_score": 0.5,
+      "length_ratio": 77.0,
+      "generated_length": 77,
+      "expected_length": 1
+    },
+    "num_chunks_retrieved": 3
+  }
+]

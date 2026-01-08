@@ -1,0 +1,7 @@
+question,category,semantic_similarity,keyword_match,exact_match,latency_seconds,success
+What is the total?,aggregation,0.4410024982172773,0.5,False,2.478224039077759,True
+What is the average?,aggregation,0.5296830390567348,0.5,False,1.8113179206848145,True
+Who is the manager?,factual,0.31953625277915115,0.0,False,0.9909090995788574,True
+What is the address?,factual,0.32149259486226556,0.0,False,0.9566419124603271,True
+How many items?,counting,0.4227163586004983,0.0,False,0.5555431842803955,True
+How many categories?,counting,0.3723264997102617,0.5,False,1.3831310272216797,True

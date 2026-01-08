@@ -1,5 +1,3 @@
-# backend/rag/test_dataset_template.json
-
 [
   {
     "question": "What is the total rent paid?",
