@@ -1,0 +1,6 @@
+question,category,semantic_similarity,keyword_match,exact_match,latency_seconds,success
+What is the average age?,aggregation,0.9999999999999998,0.3333333333333333,True,1.387078046798706,True
+Who lives in New York City?,factual,0.9755704689758271,0.6666666666666666,False,0.2728457450866699,True
+List all cities,enumeration,1.0000000000000002,1.0,True,0.2845180034637451,True
+Who is the oldest person?,comparison,0.8644454219350921,0.6666666666666666,False,0.7379660606384277,True
+How many people are there?,counting,1.0000000000000002,0.5,True,0.17432188987731934,True

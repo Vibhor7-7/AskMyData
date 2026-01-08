@@ -1,0 +1,92 @@
+[
+  {
+    "question": "What is the average age?",
+    "expected_answer": "30",
+    "generated_answer": "30",
+    "category": "aggregation",
+    "success": true,
+    "latency_seconds": 1.387078046798706,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.9999999999999998,
+      "exact_match": true,
+      "keyword_match_score": 0.3333333333333333,
+      "length_ratio": 1.0,
+      "generated_length": 2,
+      "expected_length": 2
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "Who lives in New York City?",
+    "expected_answer": "Alice lives in New York City",
+    "generated_answer": "Alice lives in NYC.",
+    "category": "factual",
+    "success": true,
+    "latency_seconds": 0.2728457450866699,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.9755704689758271,
+      "exact_match": false,
+      "keyword_match_score": 0.6666666666666666,
+      "length_ratio": 0.6785714285714286,
+      "generated_length": 19,
+      "expected_length": 28
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "List all cities",
+    "expected_answer": "NYC, LA, Chicago",
+    "generated_answer": "NYC, LA, Chicago",
+    "category": "enumeration",
+    "success": true,
+    "latency_seconds": 0.2845180034637451,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 1.0000000000000002,
+      "exact_match": true,
+      "keyword_match_score": 1.0,
+      "length_ratio": 1.0,
+      "generated_length": 16,
+      "expected_length": 16
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "Who is the oldest person?",
+    "expected_answer": "Charlie is the oldest at 35 years",
+    "generated_answer": "Charlie, age 35.",
+    "category": "comparison",
+    "success": true,
+    "latency_seconds": 0.7379660606384277,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 0.8644454219350921,
+      "exact_match": false,
+      "keyword_match_score": 0.6666666666666666,
+      "length_ratio": 0.48484848484848486,
+      "generated_length": 16,
+      "expected_length": 33
+    },
+    "num_chunks_retrieved": 3
+  },
+  {
+    "question": "How many people are there?",
+    "expected_answer": "3",
+    "generated_answer": "3",
+    "category": "counting",
+    "success": true,
+    "latency_seconds": 0.17432188987731934,
+    "retrieval_metrics": {},
+    "answer_metrics": {
+      "semantic_similarity": 1.0000000000000002,
+      "exact_match": true,
+      "keyword_match_score": 0.5,
+      "length_ratio": 1.0,
+      "generated_length": 1,
+      "expected_length": 1
+    },
+    "num_chunks_retrieved": 3
+  }
+]

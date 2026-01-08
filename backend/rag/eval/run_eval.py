@@ -394,7 +394,7 @@ Enter choice (0-6): """, end='')
     elif choice in examples:
         examples[choice]()
     else:
-        print("\n❌ Invalid choice")
+        print("\n Invalid choice")
         return
     
     print("\n" + "="*70)

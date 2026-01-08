@@ -38,11 +38,11 @@ class OllamaLLM:
     def generate(self, prompt: str, stream: bool = False)->str:
         """
         Generate text using Ollama LLM
-        
+
         Args:
             prompt: The complete prompt to send to LLM
             stream: If True, stream response (for real-time display)
-        
+
         Returns:
             Generated text response
         """
@@ -50,15 +50,19 @@ class OllamaLLM:
             response = ollama.generate(
                 model=self.model_name,
                 prompt=prompt,
-                stream=stream
+                stream=stream,
+                options={
+                    'num_predict': 100,  # Limit answer length to ~100 tokens
+                    'temperature': 0.3,  # Lower temperature for more focused, deterministic answers
+                }
             )
-            
+
             if stream:
                 # For now, just return the full response
                 return response['response']
             else:
                 return response['response']
-                
+
         except Exception as e:
             print(f"Error generating response: {e}")
             return f"Error: Could not generate response. {str(e)}"
@@ -98,11 +102,19 @@ INSTRUCTIONS:
 2. If the answer cannot be determined from the context, say "I cannot answer this based on the provided data"
 3. Be specific and cite relevant data points
 4. If the question asks for calculations (average, sum, count), perform them accurately
-5. Keep your answer concise and direct
+5. CRITICAL: Keep your answer extremely concise - provide ONLY the direct answer without explanations, reasoning, or step-by-step calculations
+6. For numerical answers, provide just the number or result
+7. For factual questions, provide just the fact
+8. For lists, provide the items without preamble
+
+EXAMPLES:
+- Question: "What is the average age?" → Answer: "30"
+- Question: "Who lives in NYC?" → Answer: "Alice lives in NYC"
+- Question: "List all cities" → Answer: "NYC, LA, Chicago"
 
 QUESTION: {question}
 
-ANSWER:"""
+ANSWER (be extremely brief):"""
         
         # Format context chunks
         context_text = "\n".join([
