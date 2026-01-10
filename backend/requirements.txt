@@ -1,4 +1,9 @@
-flask
+fastapi
+uvicorn
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
 pandas
 numpy
 icalendar
