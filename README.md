@@ -27,47 +27,6 @@ AskMyData bridges this gap by enabling natural language interaction with your da
 - **Intelligent:** Uses RAG to provide accurate, source-grounded answers
 
 ---
-
-##  Key Features
-
-###  Multi-Format File Support
-- **CSV:** Tabular data with automatic type detection
-- **JSON:** Nested data structures flattened intelligently
-- **PDF:** Text extraction with table detection (powered by pdfplumber)
-- **iCal:** Calendar events parsed into queryable format
-
-### RAG-Based Question Answering
-- **Semantic Search:** Finds relevant data chunks using vector embeddings
-- **Context-Aware Responses:** LLM generates answers using retrieved context
-- **Source Attribution:** Shows which data chunks were used for each answer
-- **Multi-File Support:** Query specific files or search across all uploads
-
-### Vector Embeddings & Search
-- **ChromaDB Integration:** Persistent vector database for fast similarity search
-- **Nomic Embeddings:** 768-dimensional embeddings via Ollama
-- **Metadata Filtering:** Queries isolated to specific files
-- **Efficient Chunking:** Row-based chunking for structured data, semantic chunking for documents
-
-### ocal LLM Inference
-- **Ollama Integration:** Run models completely offline
-- **llama3.2 Model:** Fast, capable 3B parameter model
-- **Custom Prompts:** Tailored prompts for data analysis vs document Q&A
-- **Streaming Support:** Real-time response generation (future enhancement)
-
-### User Management & Persistence
-- **Authentication:** Secure session-based login with password hashing
-- **Multi-User Support:** Each user's files and chats are isolated
-- **Chat History:** Persistent conversation logs
-- **Dashboard Analytics:** File counts, query stats, recent activity
-
-### Modern UI/UX
-- **Next.js Frontend:** Fast, responsive React application
-- **Dark/Light Mode:** Theme toggle with system preference detection
-- **Real-Time Updates:** Instant feedback on uploads and queries
-- **Drag-and-Drop Upload:** Intuitive file management
-
----
-
 ## High-Level Architecture
 
 ### System Overview
@@ -125,12 +84,6 @@ AskMyData bridges this gap by enabling natural language interaction with your da
 - **State Management:** React hooks (useState, useEffect, useCallback)
 - **Styling:** Tailwind CSS with Radix UI primitives
 - **Animations:** Framer Motion for smooth transitions
-
-**Key Features:**
-- Client-side routing with URL parameters for file context
-- Real-time form validation
-- Toast notifications for user feedback
-- Responsive design (mobile-friendly)
 
 ### Backend Architecture
 **Technology:** Flask 3.x, Python 3.10+
@@ -190,7 +143,7 @@ Embeddings + Metadata → ChromaDB Collection
 Question → Embed → Similarity Search → Top-K Chunks → Context
 ```
 - Metadata filtering for file-specific queries
-- Configurable top-k (default: 5-10 chunks)
+- Configurable top-k (revised to 10-15 for better performance) 
 
 **5. Answer Generation**
 ```python
