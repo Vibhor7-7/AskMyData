@@ -1,0 +1,118 @@
+timestamp,run_id,question,category,expected_answer,generated_answer,semantic_similarity,keyword_match_score,exact_match,latency_ms,success,num_chunks_retrieved
+2026-01-08 01:13:53,20260108_011353,What is the average age?,aggregation,30 years old,"To calculate the average age, I will add up the ages of all individuals and divide by the total number of individuals.
+
+Total age = Alice's age + Charlie's age + Bob's age
+= 25 + 35 + 30
+= 90
+
+Total number of individuals = 3
+
+Average age = Total age / Total number of individuals
+= 90 / 3
+= 30",0.6308696590388335,1.0,False,3118.453025817871,True,3
+2026-01-08 01:13:53,20260108_011353,Who lives in New York City?,factual,Alice lives in New York City,Alice lives in New York City (city: NYC).,0.9817800445213035,1.0,False,392.5449848175049,True,3
+2026-01-08 01:13:53,20260108_011353,How many people are in the dataset?,counting,3 people,"There are 3 people in the dataset:
+
+1. Bob
+2. Charlie
+3. Alice",0.7466456716110158,0.6666666666666666,False,894.5207595825195,True,3
+2026-01-08 10:08:41,20260108_100841,What is the average age?,aggregation,30 years old,"To calculate the average age, I will add up the ages of all individuals and divide by the number of individuals.
+
+Alice's age: 25
+Charlie's age: 35
+Bob's age: 30
+
+Total age = 25 + 35 + 30 = 90
+Number of individuals = 3
+
+Average age = Total age / Number of individuals
+= 90 / 3
+= 30",0.632724784265616,1.0,False,3015.5129432678223,True,3
+2026-01-08 10:08:41,20260108_100841,Who lives in New York City?,factual,Alice lives in New York City,"Alice lives in NYC, as specified in the DATA CONTEXT: ""name: Alice, age: 25, city: NYC"".",0.8598355874894758,0.6666666666666666,False,794.687032699585,True,3
+2026-01-08 10:08:41,20260108_100841,How many people are in the dataset?,counting,3 people,"There are 3 people in the dataset:
+
+1. Bob (age: 30, city: LA)
+2. Charlie (age: 35, city: Chicago)
+3. Alice (age: 25, city: NYC)",0.6548770131311757,0.6666666666666666,False,1615.25297164917,True,3
+2026-01-08 10:10:35,20260108_101035,How many rows are in the dataset?,counting,Number varies based on your data,I couldn't find any relevant data to answer this question.,0.6144401356698639,0.0,False,31.18109703063965,False,0
+2026-01-08 10:10:35,20260108_101035,What columns are available?,factual,Depends on your CSV,I couldn't find any relevant data to answer this question.,0.4613132660087863,0.0,False,11.412858963012695,False,0
+2026-01-08 11:58:00,20260108_115800,What is the average age?,aggregation,The average age is 30 years old,"To calculate the average age, I will add up the ages of all individuals and divide by the number of individuals.
+
+Alice's age: 25
+Charlie's age: 35
+Bob's age: 30
+
+Total age: 25 + 35 + 30 = 90
+
+Number of individuals: 3
+
+Average age: 90 / 3 = 30",0.8016552745479049,0.5,False,2902.470827102661,True,3
+2026-01-08 11:58:00,20260108_115800,Who lives in New York City?,factual,Alice lives in NYC,"Alice lives in New York City. According to the data context, her city is listed as ""NYC"".",0.9026650347735757,1.0,False,637.0711326599121,True,3
+2026-01-08 11:58:00,20260108_115800,How many people are in the dataset?,counting,There are 3 people in the dataset,"There are 3 people in the dataset.
+
+I arrived at this conclusion by counting the individual entries:
+
+1. Bob
+2. Charlie
+3. Alice
+
+All three names are present, so there are 3 people in total.",0.876228878915065,1.0,False,1462.890863418579,True,3
+2026-01-08 11:58:00,20260108_115800,Who is the oldest person?,comparison,Charlie is the oldest at 35 years old,"Based on the data context, Charlie is the oldest person at 35 years old.",0.935965861832562,0.6,False,526.8800258636475,True,3
+2026-01-08 11:58:00,20260108_115800,List all the cities,enumeration,"The cities are NYC, LA, and Chicago","Based on the provided data context, the list of cities is:
+
+1. NYC
+2. Chicago
+3. LA",0.8473114782352509,0.8,False,931.0121536254883,True,3
+2026-01-08 12:12:09,20260108_121209,What is the total?,aggregation,500,"To find the total, I will add up the ages of all individuals:
+
+Bob's age: 30
+Alice's age: 25
+Charlie's age: 35
+
+Total = 30 + 25 + 35 = 90
+
+Therefore, the total is 90.",0.4410024982172773,0.5,False,2478.224039077759,True,3
+2026-01-08 12:12:09,20260108_121209,What is the average?,aggregation,50,"To calculate the average, I will add up the ages of the individuals and divide by the total number of individuals.
+
+Age sum: 30 + 35 + 25 = 90
+Number of individuals: 3
+
+Average age = Age sum / Number of individuals
+= 90 / 3
+= 30",0.5296830390567348,0.5,False,1811.3179206848145,True,3
+2026-01-08 12:12:09,20260108_121209,Who is the manager?,factual,John Smith,"I cannot determine who the manager is based on the provided data context. The data only mentions names, ages, and cities, but does not include any information about job titles or positions.",0.31953625277915115,0.0,False,990.9090995788574,True,3
+2026-01-08 12:12:09,20260108_121209,What is the address?,factual,123 Main St,I cannot provide an address as it is not specified in the data context. Is there anything else I can help you with?,0.32149259486226556,0.0,False,956.6419124603271,True,3
+2026-01-08 12:12:09,20260108_121209,How many items?,counting,10,There are 3 items in the data context.,0.4227163586004983,0.0,False,555.5431842803955,True,3
+2026-01-08 12:12:09,20260108_121209,How many categories?,counting,5,"Based on the provided DATA CONTEXT, there are 3 categories:
+
+1. Name (Alice, Charlie, Bob)
+2. Age (25, 35, 30)
+3. City (NYC, Chicago, LA)",0.3723264997102617,0.5,False,1383.1310272216797,True,3
+2026-01-08 12:12:39,20260108_121239,What is the average age?,aggregation,30,"To calculate the average age, I will add up the ages of all individuals and then divide by the total number of individuals.
+
+Total age = Alice (25) + Charlie (35) + Bob (30)
+Total age = 25 + 35 + 30
+Total age = 90
+
+Number of individuals = 3
+
+Average age = Total age / Number of individuals
+= 90 / 3
+= 30",0.4896065465369813,1.0,False,2509.160041809082,True,3
+2026-01-08 12:12:39,20260108_121239,Who lives in New York City?,factual,Alice lives in New York City,"Alice lives in New York City. According to the provided data context, it is stated that ""name: Alice, age: 25, city: NYC"".",0.8861001284488613,1.0,False,867.609977722168,True,3
+2026-01-08 12:12:39,20260108_121239,List all cities,enumeration,"NYC, LA, Chicago","The list of cities is:
+
+1. NYC
+2. Chicago
+3. LA",0.8529327792702404,1.0,False,520.6680297851562,True,3
+2026-01-08 12:12:39,20260108_121239,Who is the oldest person?,comparison,Charlie is the oldest at 35 years,"Based on the provided data context, Charlie is the oldest person with an age of 35.",0.9371229349350907,1.0,False,818.1099891662598,True,3
+2026-01-08 12:12:39,20260108_121239,How many people are there?,counting,3,"There are 3 people mentioned in the data context:
+
+1. Bob
+2. Charlie
+3. Alice",0.6374931847389083,0.5,False,658.8857173919678,True,3
+2026-01-08 12:27:39,20260108_122739,What is the average age?,aggregation,30,30,0.9999999999999998,0.3333333333333333,True,1387.078046798706,True,3
+2026-01-08 12:27:39,20260108_122739,Who lives in New York City?,factual,Alice lives in New York City,Alice lives in NYC.,0.9755704689758271,0.6666666666666666,False,272.8457450866699,True,3
+2026-01-08 12:27:39,20260108_122739,List all cities,enumeration,"NYC, LA, Chicago","NYC, LA, Chicago",1.0000000000000002,1.0,True,284.5180034637451,True,3
+2026-01-08 12:27:39,20260108_122739,Who is the oldest person?,comparison,Charlie is the oldest at 35 years,"Charlie, age 35.",0.8644454219350921,0.6666666666666666,False,737.9660606384277,True,3
+2026-01-08 12:27:39,20260108_122739,How many people are there?,counting,3,3,1.0000000000000002,0.5,True,174.32188987731934,True,3

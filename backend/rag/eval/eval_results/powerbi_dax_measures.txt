@@ -1,0 +1,55 @@
+
+-- DAX MEASURES FOR POWER BI --
+
+-- 1. Average Query Relevance
+Avg Query Relevance = AVERAGE(time_series[query_relevance_pct])
+
+-- 2. Target Achievement (85%)
+Target Achievement = 
+    IF(
+        AVERAGE(time_series[query_relevance_pct]) >= 85,
+        "✓ Met",
+        "✗ Not Met"
+    )
+
+-- 3. Improvement from First Run
+Improvement = 
+    VAR FirstRun = CALCULATE(
+        AVERAGE(time_series[query_relevance_pct]),
+        time_series[timestamp] = MIN(time_series[timestamp])
+    )
+    VAR CurrentRun = AVERAGE(time_series[query_relevance_pct])
+    RETURN CurrentRun - FirstRun
+
+-- 4. Questions Passing Threshold (70%+)
+Questions Passing = 
+    CALCULATE(
+        COUNTROWS(questions),
+        questions[semantic_similarity] >= 0.7
+    )
+
+-- 5. Average Latency (Latest Run)
+Latest Avg Latency = 
+    CALCULATE(
+        AVERAGE(time_series[avg_latency_ms]),
+        time_series[timestamp] = MAX(time_series[timestamp])
+    )
+
+-- 6. Category Performance Color
+Category Color = 
+    SWITCH(
+        TRUE(),
+        AVERAGE(category_performance[avg_semantic_similarity]) >= 0.85, "Green",
+        AVERAGE(category_performance[avg_semantic_similarity]) >= 0.70, "Yellow",
+        "Red"
+    )
+
+-- 7. Total Test Cases
+Total Questions = COUNTROWS(questions)
+
+-- 8. Success Rate %
+Success Rate % = 
+    DIVIDE(
+        CALCULATE(COUNTROWS(questions), questions[success] = TRUE),
+        COUNTROWS(questions)
+    ) * 100

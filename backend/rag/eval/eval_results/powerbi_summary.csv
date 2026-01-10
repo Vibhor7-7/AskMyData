@@ -1,0 +1,11 @@
+metric,value,unit,target,status
+Query Relevance Score,96.80031781821839,%,85.0,✓ Good
+Semantic Similarity,96.80031781821839,%,85.0,✓ Good
+Exact Match Rate,60.0,%,50.0,✓ Good
+Keyword Match Score,63.33333333333333,%,80.0,⚠ Needs Work
+Success Rate,100.0,%,95.0,✓ Good
+Average Latency (ms),571.3459491729736,ms,2000.0,✓ Good
+Median Latency (ms),284.5180034637451,ms,1000.0,✓ Good
+P95 Latency (ms),1257.2556495666502,ms,3000.0,✓ Good
+Throughput (queries/sec),1.6686271813908962,qps,1.0,✓ Good
+Total Queries,5.0,count,,N/A
