@@ -2,8 +2,9 @@ fastapi
 uvicorn
 python-multipart
 python-jose[cryptography]
-passlib[bcrypt]
+passlib[argon2]
 python-dotenv
+email-validator
 pandas
 numpy
 icalendar
