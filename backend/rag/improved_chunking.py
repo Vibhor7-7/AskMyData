@@ -1,8 +1,7 @@
 """
 Improved Chunking Strategies for Better RAG Performance
 
-This module provides enhanced text formatting for better LLM understanding.
-Use these strategies to boost your query relevance from 50% to 85%+
+Better text formatting so that the LLM has a better context to work with. 
 """
 
 import pandas as pd
