@@ -34,14 +34,14 @@ AskMyData bridges this gap by enabling natural language interaction with your da
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         USER INTERFACE                          │
-│  Next.js + TypeScript + Radix UI + Tailwind CSS                │
+│  Next.js + TypeScript + Radix UI + Tailwind CSS                 │
 └────────────────────┬────────────────────────────────────────────┘
                      │ HTTP/REST API (Port 3000)
                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                      FLASK REST API (Port 5001)                 │
+│                      FastAPI REST API (Port 5001)               │
 │  • Authentication   • File Upload    • Query Processing         │
-│  • CORS Handler     • Session Mgmt   • Error Handling          │
+│  • CORS Handler     • Session Mgmt   • Error Handling           │
 └────────────────────┬────────────────────────────────────────────┘
                      │
         ┌────────────┼────────────┐
@@ -58,20 +58,20 @@ AskMyData bridges this gap by enabling natural language interaction with your da
         ┌──────────────────────────────────────────┐
         │         RAG PIPELINE FLOW                │
         │                                          │
-        │  1. Chunking Module                     │
-        │     └─> Convert data to text chunks     │
+        │  1. Chunking Module                      │
+        │     └─> Convert data to text chunks      │
         │                                          │
-        │  2. Embeddings (Ollama)                 │
-        │     └─> nomic-embed-text (768-dim)      │
+        │  2. Embeddings (Ollama)                  │
+        │     └─> nomic-embed-text (768-dim)       │
         │                                          │
-        │  3. Vector Store (ChromaDB)             │
-        │     └─> Persistent similarity search    │
+        │  3. Vector Store (ChromaDB)              │
+        │     └─> Persistent similarity search     │
         │                                          │
-        │  4. Query Processor                     │
-        │     └─> Embed query → Retrieve context  │
+        │  4. Query Processor                      │
+        │     └─> Embed query → Retrieve context   │
         │                                          │
-        │  5. LLM Generation (Ollama)             │
-        │     └─> llama3.2 generates answer       │
+        │  5. LLM Generation (Ollama)              │
+        │     └─> llama3.2 generates answer        │
         └──────────────────────────────────────────┘
 ```
 
