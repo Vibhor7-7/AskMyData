@@ -12,7 +12,7 @@ AskMyData is an intelligent web application that allows users to upload their ow
 Traditional data analysis requires knowledge of SQL, Python, or spreadsheet formulas. Non-technical users struggle to extract insights from their data, and even technical users face friction when exploring unfamiliar datasets.
 
 ### The Solution
-AskMyData bridges this gap by enabling natural language interaction with your data. Upload a file, ask questions in plain English, and get intelligent answers powered by AI—no coding required.
+AskMyData bridges this gap by enabling natural language interaction with your data. Upload a file, ask questions in plain English, and get intelligent answers grounded in uploaded context. 
 
 **Example Interactions:**
 - Upload a sales CSV → "What was our revenue in Q3?"
