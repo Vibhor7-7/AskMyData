@@ -102,19 +102,12 @@ INSTRUCTIONS:
 2. If the answer cannot be determined from the context, say "I cannot answer this based on the provided data"
 3. Be specific and cite relevant data points
 4. If the question asks for calculations (average, sum, count), perform them accurately
-5. CRITICAL: Keep your answer extremely concise - provide ONLY the direct answer without explanations, reasoning, or step-by-step calculations
-6. For numerical answers, provide just the number or result
-7. For factual questions, provide just the fact
-8. For lists, provide the items without preamble
 
-EXAMPLES:
-- Question: "What is the average age?" → Answer: "30"
-- Question: "Who lives in NYC?" → Answer: "Alice lives in NYC"
-- Question: "List all cities" → Answer: "NYC, LA, Chicago"
+
 
 QUESTION: {question}
 
-ANSWER (be extremely brief):"""
+ANSWER (be accurate and provide relevant answer while still being brief):"""
         
         # Format context chunks
         context_text = "\n".join([
