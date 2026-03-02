@@ -52,7 +52,7 @@ class OllamaLLM:
                 prompt=prompt,
                 stream=stream,
                 options={
-                    'num_predict': 100,  # Limit answer length to ~100 tokens
+                    'num_predict': 200,  # Limit answer length to ~200 tokens
                     'temperature': 0.3,  # Lower temperature for more focused, deterministic answers
                 }
             )

@@ -1,8 +1,8 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { Bot, User, ChevronDown, ChevronUp, Sparkles } from "lucide-react"
-import { useState } from "react"
+import { Bot, User, ChevronDown, ChevronUp, Sparkles, Search, Loader2 } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
 
 interface Message {
   id: string
@@ -17,7 +17,40 @@ interface ChatMessagesProps {
   isLoading: boolean
 }
 
+const LOADING_STAGES = [
+  { message: "Understanding your question...", Icon: Loader2, spin: true },
+  { message: "Searching through your data...", Icon: Search, spin: false },
+  { message: "Generating your answer...", Icon: Sparkles, spin: true },
+]
+
+// How long to spend on each stage before advancing (ms)
+const STAGE_DURATIONS = [800, 1400]
+
 export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
+  const [stageIndex, setStageIndex] = useState(0)
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  useEffect(() => {
+    timersRef.current.forEach(clearTimeout)
+    timersRef.current = []
+
+    if (isLoading) {
+      setStageIndex(0)
+      let elapsed = 0
+      STAGE_DURATIONS.forEach((duration, i) => {
+        elapsed += duration
+        const t = setTimeout(() => setStageIndex(i + 1), elapsed)
+        timersRef.current.push(t)
+      })
+    } else {
+      setStageIndex(0)
+    }
+
+    return () => timersRef.current.forEach(clearTimeout)
+  }, [isLoading])
+
+  const currentStage = LOADING_STAGES[Math.min(stageIndex, LOADING_STAGES.length - 1)]
+
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-6">
       <AnimatePresence initial={false}>
@@ -70,15 +103,36 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
             <div className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-600">
               <Bot className="w-5 h-5 text-primary-foreground" />
             </div>
-            <div className="rounded-2xl p-4 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20">
-              <div className="flex items-center gap-2">
+            <div className="rounded-2xl p-4 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 min-w-[220px]">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  key={stageIndex}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-2"
                 >
-                  <Sparkles className="w-5 h-5 text-emerald-500" />
+                  <motion.div
+                    animate={currentStage.spin ? { rotate: 360 } : {}}
+                    transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  >
+                    <currentStage.Icon className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                  </motion.div>
+                  <span className="text-muted-foreground text-sm">{currentStage.message}</span>
                 </motion.div>
-                <span className="text-muted-foreground">Analyzing your data...</span>
+              </AnimatePresence>
+              {/* Stage dots */}
+              <div className="flex gap-1 mt-2.5">
+                {LOADING_STAGES.map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="h-1 rounded-full bg-emerald-500"
+                    animate={{ opacity: i <= stageIndex ? 1 : 0.2 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ width: `${100 / LOADING_STAGES.length}%` }}
+                  />
+                ))}
               </div>
             </div>
           </div>

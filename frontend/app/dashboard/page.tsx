@@ -17,7 +17,7 @@ export default function DashboardPage() {
     const fetchUser = async () => {
       try {
         const user = await api.auth.getCurrentUser()
-        setUserName(user.username)
+        setUserName(user.name || user.email?.split('@')[0] || "User")
       } catch (error) {
         console.error('Failed to fetch user:', error)
         router.push('/login')
