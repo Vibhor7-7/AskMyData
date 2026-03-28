@@ -21,7 +21,6 @@ AskMyData bridges this gap by enabling natural language interaction with your da
 
 ### Why It's Useful
 - **Accessible:** Anyone can analyze data without technical skills
-- **Fast:** Get insights in seconds, not hours
 - **Private:** Runs locally with Ollama—your data never leaves your machine
 - **Flexible:** Works with CSV, JSON, PDF, and iCal files
 - **Intelligent:** Uses RAG to provide accurate, source-grounded answers
